@@ -1,0 +1,157 @@
+interface MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}
+
+type Listing {
+  mlsStatus: String
+  price: Int
+  sqft: Int
+  pricePerSqFt: Int
+  lotSize: Int
+  beds: Float
+  baths: Float
+  fullBaths: Float
+  partialBaths: Float
+  streetLine: String!
+  stories: Float
+  city: String!
+  state: String!
+  zip: String!
+  soldDate: Int
+  propertyType: Int
+  yearBuilt: Int
+  timeZone: String
+  url: String!
+  location: String
+  propertyId: Int!
+  listingId: Int!
+  latitude: Float
+  longitude: Float
+  mlsId: String!
+  hoa: Int
+}
+
+input ListingInput {
+  mlsStatus: String
+  price: Int
+  sqft: Int
+  pricePerSqFt: Int
+  lotSize: Int
+  beds: Float
+  baths: Float
+  fullBaths: Float
+  partialBaths: Float
+  streetLine: String!
+  stories: Float
+  city: String!
+  state: String!
+  zip: String!
+  soldDate: Int
+  propertyType: Int
+  yearBuilt: Int
+  timeZone: String
+  url: String!
+  location: String
+  propertyId: Int!
+  listingId: Int!
+  latitude: Float
+  longitude: Float
+  mlsId: String!
+  hoa: Int
+}
+
+type Stat {
+  "Fields that you can retrieve from a stat object."
+  medianPrice: Float
+  modePrice: Int
+  averagePrice: Float
+  city: String
+  state: String
+  zip: String
+  beds: Float
+  baths: Float
+  averagePricePerSqFt: Float
+  modePricePerSqFt: Int
+  medianPricePerSqFt: Float
+  averageSqFt: Float
+  modeSqFt: Int
+  medianSqFt: Float
+  averageLotSize: Float
+  modeLotSize: Int
+  medianLotSize: Float
+  averageBeds: Float
+  medianBeds: Float
+  modeBeds: Int
+  averageBaths: Float
+  medianBaths: Float
+  modeBaths: Int
+  averageHoa: Float
+  medianHoa: Float
+  modeHoa: Int
+  averageYearBuilt: Float
+  medianYearBuilt: Float
+  modeYearBuilt: Int
+  curDateUtc: String
+}
+
+input StatInput {
+  "Fields responsible for creating a new stat object."
+  medianPrice: Float
+  modePrice: Int
+  averagePrice: Float
+  city: String
+  state: String
+  zip: String
+  beds: Float
+  baths: Float
+  averagePricePerSqFt: Float
+  modePricePerSqFt: Int
+  medianPricePerSqFt: Float
+  averageSqFt: Float
+  modeSqFt: Int
+  medianSqFt: Float
+  averageLotSize: Float
+  modeLotSize: Int
+  medianLotSize: Float
+  averageBeds: Float
+  medianBeds: Float
+  modeBeds: Int
+  averageBaths: Float
+  medianBaths: Float
+  modeBaths: Int
+  averageHoa: Float
+  medianHoa: Float
+  modeHoa: Int
+  averageYearBuilt: Float
+  medianYearBuilt: Float
+  modeYearBuilt: Int
+  curDateUtc: String
+}
+
+type Query {
+  listings: [Listing]
+  stats: [Stat]
+}
+
+type AddListingMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  listing: Listing
+}
+
+type AddStatMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  stat: Stat
+}
+
+type Mutation {
+  addListing(listing: ListingInput!): Listing!
+  addListings(listings: [ListingInput!]!): [Listing!]!
+  addStat(stat: StatInput!): Stat!
+  addStats(stats: [StatInput!]!): [Stat!]!
+}

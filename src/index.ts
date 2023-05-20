@@ -1,167 +1,15 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import { ApolloServerErrorCode } from '@apollo/server/errors';
+import { DataSource } from './dataSource.js';
 
-const typeDefs = `#graphql
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
+import { readFileSync } from 'fs';
 
-  interface MutationResponse {
-    code: String!
-    success: Boolean!
-    message: String!
-  }
+// Note: this uses a path relative to the project's
+// root directory, which is the current working directory
+// if the server is executed using `npm run`.
+const typeDefs = readFileSync('./schema.graphql', { encoding: 'utf-8' });
 
-  type Listing {
-    mlsStatus: String
-    price: Int
-    sqft: Int
-    pricePerSqFt: Int
-    lotSize: Int
-    beds: Float
-    baths: Float
-    fullBaths: Float
-    partialBaths: Float
-    streetLine: String!
-    stories: Float
-    city: String!
-    state: String!
-    zip: String!
-    soldDate: Int
-    propertyType: Int
-    yearBuilt: Int
-    timeZone: String
-    url: String!
-    location: String
-    propertyId: Int!
-    listingId: Int!
-    latitude: Float
-    longitude: Float
-    mlsId: String!
-    hoa: Int
-  }
-
-  input ListingInput {
-    mlsStatus: String
-    price: Int
-    sqft: Int
-    pricePerSqFt: Int
-    lotSize: Int
-    beds: Float
-    baths: Float
-    fullBaths: Float
-    partialBaths: Float
-    streetLine: String!
-    stories: Float
-    city: String!
-    state: String!
-    zip: String!
-    soldDate: Int
-    propertyType: Int
-    yearBuilt: Int
-    timeZone: String
-    url: String!
-    location: String
-    propertyId: Int!
-    listingId: Int!
-    latitude: Float
-    longitude: Float
-    mlsId: String!
-    hoa: Int
-  }
-
-  type Stat {
-    "Fields that you can retrieve from a stat object."
-    medianPrice: Float
-    modePrice: Int
-    averagePrice: Float
-    city: String
-    state: String
-    zip: String
-    beds: Float
-    baths: Float
-    averagePricePerSqFt: Float
-    modePricePerSqFt: Int
-    medianPricePerSqFt: Float
-    averageSqFt: Float
-    modeSqFt: Int
-    medianSqFt: Float
-    averageLotSize: Float
-    modeLotSize: Int
-    medianLotSize: Float
-    averageBeds: Float
-    medianBeds: Float
-    modeBeds: Int
-    averageBaths: Float 
-    medianBaths: Float
-    modeBaths: Int
-    averageHoa: Float
-    medianHoa: Float
-    modeHoa: Int
-    averageYearBuilt: Float
-    medianYearBuilt: Float
-    modeYearBuilt: Int
-    curDateUtc: String
-  }
-
-  input StatInput {
-    "Fields responsible for creating a new stat object."
-    medianPrice: Float
-    modePrice: Int
-    averagePrice: Float
-    city: String
-    state: String
-    zip: String
-    beds: Float
-    baths: Float
-    averagePricePerSqFt: Float
-    modePricePerSqFt: Int
-    medianPricePerSqFt: Float
-    averageSqFt: Float
-    modeSqFt: Int
-    medianSqFt: Float
-    averageLotSize: Float
-    modeLotSize: Int
-    medianLotSize: Float
-    averageBeds: Float
-    medianBeds: Float
-    modeBeds: Int
-    averageBaths: Float 
-    medianBaths: Float
-    modeBaths: Int
-    averageHoa: Float
-    medianHoa: Float
-    modeHoa: Int
-    averageYearBuilt: Float
-    medianYearBuilt: Float
-    modeYearBuilt: Int
-    curDateUtc: String
-  }
-
-  type Query {
-    listings: [Listing]
-    stats: [Stat]
-  }
-
-  type AddListingMutationResponse implements MutationResponse {
-    code: String!
-    success: Boolean!
-    message: String!
-    listing: Listing
-  }
-
-  type AddStatMutationResponse implements MutationResponse {
-    code: String!
-    success: Boolean!
-    message: String!
-    stat: Stat
-  }
-
-  type Mutation {
-    addListing(listing: ListingInput!): Listing!
-    addListings(listings: [ListingInput!]!): [Listing!]!
-    addStat(stat: StatInput!): Stat!
-    addStats(stats: [StatInput!]!): [Stat!]!
-  }
-`;
 
 const jsonData = [
     {
@@ -176,9 +24,9 @@ const jsonData = [
         partialBaths: 1,
         streetLine: 'Holiday',
         stories: 2,
-        city: 'Arnold',
+        city: 'St. Louis',
         state: 'MO',
-        zip: 63010,
+        zip: 63011,
         soldDate: null,
         propertyType: 6,
         yearBuilt: 1978,
@@ -198,25 +46,53 @@ const jsonData = [
 // This resolver retrieves books from the "books" array above.
 const resolvers = {
     Query: {
-        listings: () => jsonData,
+        // listings: () => jsonData,
+        listings(parent, args, contextValue, info) {
+          return 
+          // users.find((user) => user.id === args.id);
+        },
     },
+    
   };
 
+  interface MyContext {
+    // Context typing
+    token?: String;
+    dataSources: {
+      connector: DataSource;
+    };
+  }
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
-const server = new ApolloServer({
+const server = new ApolloServer<MyContext>({
     typeDefs,
     resolvers,
+    formatError: (formattedError, error) => {
+      if (
+        formattedError.extensions.code ===
+        ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED
+      ) {
+        return {
+          ...formattedError,
+          message: "Your query doesn't match the schema. Try double-checking it!",
+        };
+      }
+
+      return formattedError;
+    },
   });
   
-  // Passing an ApolloServer instance to the `startStandaloneServer` function:
-  //  1. creates an Express app
-  //  2. installs your ApolloServer instance as middleware
-  //  3. prepares your app to handle incoming requests
+
   const { url } = await startStandaloneServer(server, {
-    listen: { port: 4000 },
+    context: async ({ req }) => ({
+      listen: {port: 4000},
+      token: null,//getToken(req.headers.authentication),
+      dataSources: {
+        connector: new DataSource({token: null}),
+      },
+    }),
   });
-  
+
   console.log(`🚀  Server ready at: ${url}`);
 
