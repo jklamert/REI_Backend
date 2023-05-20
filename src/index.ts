@@ -1,9 +1,10 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
-import { DataSource } from './dataSource.js';
-
+import { ListingDataSource } from './dataSource.js';
 import { readFileSync } from 'fs';
+import resolvers from './resolvers/index.js';
+
 
 // Note: this uses a path relative to the project's
 // root directory, which is the current working directory
@@ -42,24 +43,11 @@ const jsonData = [
     }
   ];
 
-// Resolvers define how to fetch the types defined in your schema.
-// This resolver retrieves books from the "books" array above.
-const resolvers = {
-    Query: {
-        // listings: () => jsonData,
-        listings(parent, args, contextValue, info) {
-          return 
-          // users.find((user) => user.id === args.id);
-        },
-    },
-    
-  };
-
   interface MyContext {
     // Context typing
     token?: String;
     dataSources: {
-      connector: DataSource;
+      listingAPI: ListingDataSource;
     };
   }
 
@@ -89,7 +77,7 @@ const server = new ApolloServer<MyContext>({
       listen: {port: 4000},
       token: null,//getToken(req.headers.authentication),
       dataSources: {
-        connector: new DataSource({token: null}),
+        listingAPI: new ListingDataSource(),
       },
     }),
   });

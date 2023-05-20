@@ -150,8 +150,5 @@ type AddStatMutationResponse implements MutationResponse {
 }
 
 type Mutation {
-  addListing(listing: ListingInput!): Listing!
-  addListings(listings: [ListingInput!]!): [Listing!]!
-  addStat(stat: StatInput!): Stat!
-  addStats(stats: [StatInput!]!): [Stat!]!
+  addListing(listing: ListingInput!): AddListingMutationResponse
 }
