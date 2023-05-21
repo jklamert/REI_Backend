@@ -6,6 +6,7 @@ import mutations from './mutations';
 // separately type checking our queries and resolvers. However, the "Resolvers"
 // generated types is useful syntax if you are defining your resolvers
 // in a single file.
-const resolvers: Resolvers = { ...queries, ...mutations };
+const resolvers: Resolvers = { Query: queries, 
+    Mutation: mutations };
 
 export default resolvers;
