@@ -1,62 +1,39 @@
+import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config()
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
-import { ListingDataSource } from './dataSource.js';
+
+import { ListingDataSource, StatDataSource } from './dataSource.js';
 import { readFileSync } from 'fs';
 import resolvers from './resolvers/index.js';
-
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from '@apollo/server/plugin/landingPage/default';
 
 // Note: this uses a path relative to the project's
 // root directory, which is the current working directory
 // if the server is executed using `npm run`.
 const typeDefs = readFileSync('./schema.graphql', { encoding: 'utf-8' });
 
-
-const jsonData = [
-    {
-        mlsStatus: 'Active',
-        price: 334974,
-        sqft: 1279,
-        pricePerSqFt: 157,
-        lotSize: 9927,
-        beds: 3,
-        baths: 2.5,
-        fullBaths: 2, 
-        partialBaths: 1,
-        streetLine: 'Holiday',
-        stories: 2,
-        city: 'St. Louis',
-        state: 'MO',
-        zip: 63011,
-        soldDate: null,
-        propertyType: 6,
-        yearBuilt: 1978,
-        timeZone:'US/Central',
-        url:'url',
-        location: 'Valley at Winding Bluffs',
-        propertyId:183485426,
-        listingId:164146978,
-        latitude:38.4692,
-        longitude:-90.46247,
-        mlsId:22078812,
-        hoa: 15
-    }
-  ];
-
-  interface MyContext {
+  export interface MyContext {
     // Context typing
+    listen?: Object;
     token?: String;
     dataSources: {
       listingAPI: ListingDataSource;
+      statAPI: StatDataSource;
     };
   }
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
 const server = new ApolloServer<MyContext>({
-    typeDefs,
-    resolvers,
+    typeDefs: typeDefs,
+    resolvers: resolvers,
     formatError: (formattedError, error) => {
+      console.error(error);
       if (
         formattedError.extensions.code ===
         ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED
@@ -69,17 +46,42 @@ const server = new ApolloServer<MyContext>({
 
       return formattedError;
     },
+    plugins: [
+      process.env.NODE_ENV === 'production'
+        ? ApolloServerPluginLandingPageProductionDefault()
+        : ApolloServerPluginLandingPageLocalDefault({ embed: false }),
+    ],
   });
   
 
+
   const { url } = await startStandaloneServer(server, {
-    context: async ({ req }) => ({
+    context: async function ({ req }) {
+
+      // try to retrieve a user with the token
+      const user = null//getUser(token);
+
+      // optionally block the user
+      // we could also check user roles/permissions here
+      // if (!user){
+      //   // throwing a `GraphQLError` here allows us to specify an HTTP status code,
+      //   // standard `Error`s will have a 500 status code by default
+      //   throw new GraphQLError('User is not authenticated', {
+      //     extensions: {
+      //       code: 'UNAUTHENTICATED',
+      //       http: { status: 401 },
+      //     },
+      //   });
+      // }
+      
+      return {
       listen: {port: 4000},
-      token: null,//getToken(req.headers.authentication),
+      token: req.headers.authorization || '',
       dataSources: {
-        listingAPI: new ListingDataSource(),
-      },
-    }),
+        listingAPI: await ListingDataSource.initialize(),
+        statAPI: new StatDataSource()
+      }}
+    },
   });
 
   console.log(`🚀  Server ready at: ${url}`);

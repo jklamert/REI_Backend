@@ -102,7 +102,7 @@ export type MutationAddListingArgs = {
 
 
 export type MutationAddStatArgs = {
-  stats: StatInput;
+  stat: StatInput;
 };
 
 export type MutationResponse = {
@@ -337,7 +337,7 @@ export type ListingResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addListing?: Resolver<Maybe<ResolversTypes['AddListingMutationResponse']>, ParentType, ContextType, RequireFields<MutationAddListingArgs, 'listing'>>;
-  addStat?: Resolver<Maybe<ResolversTypes['AddStatMutationResponse']>, ParentType, ContextType, RequireFields<MutationAddStatArgs, 'stats'>>;
+  addStat?: Resolver<Maybe<ResolversTypes['AddStatMutationResponse']>, ParentType, ContextType, RequireFields<MutationAddStatArgs, 'stat'>>;
 };
 
 export type MutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = {

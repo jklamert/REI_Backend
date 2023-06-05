@@ -1,86 +1,175 @@
-import { AddListingMutationResponse, Listing } from './generated/graphql';
+import {
+  AddListingMutationResponse,
+  Listing,
+  ListingInput,
+  StatInput,
+  Stat,
+  AddStatMutationResponse,
+} from "./generated/graphql";
+import { getClient } from "../connectionProvider";
 
 export class ListingDataSource {
-  // Our example static data set
-//   mlsStatus: String
-//   price: Int
-//   sqft: Int
-//   pricePerSqFt: Int
-//   lotSize: Int
-//   beds: Float
-//   baths: Float
-//   fullBaths: Float
-//   partialBaths: Float
-//   streetLine: String!
-//   stories: Float
-//   city: String!
-//   state: String!
-//   zip: String!
-//   soldDate: Int
-//   propertyType: Int
-//   yearBuilt: Int
-//   timeZone: String
-//   url: String!
-//   location: String
-//   propertyId: Int!
-//   listingId: Int!
-//   latitude: Float
-//   longitude: Float
-//   mlsId: String!
-//   hoa: Int
-  listings: { mlsId: string, mlsStatus?: string, price?: number, 
-    sqft?: number, pricePerSqFt?: number, lotSize?: number, beds?: number, 
-    baths?: number, fullBaths?: number, partialBaths?: number, streetLine: string, stories?: number, city: string, state: string, zip: string, soldDate?: number,
-    propertyType?: number, yearBuilt?: number,
-    timeZone?: string, url: string, location?: string, propertyId: number, listingId: number, latitude?: number, longitude?: number,
-    hoa?: number  }[] = [
-    {
-        mlsId:'22078812',
-        mlsStatus: 'Active',
-        price: 334974,
-        sqft: 1279,
-        pricePerSqFt: 157,
-        lotSize: 9927,
-        beds: 3,
-        baths: 2.5,
-        fullBaths: 2, 
-        partialBaths: 1,
-        streetLine: 'Holiday',
-        stories: 2,
-        city: 'St. Louis',
-        state: 'MO',
-        zip: '63011',
-        soldDate: null,
-        propertyType: 6,
-        yearBuilt: 1978,
-        timeZone:'US/Central',
-        url:'url',
-        location: 'Valley at Winding Bluffs',
-        propertyId:183485426,
-        listingId:164146978,
-        latitude:38.4692,
-        longitude:-90.46247,
-        hoa: 15
-    }
-  ];
+  client = null;
 
-  getListings(): Listing[] {
-    // simulate fetching a list of books
-    return this.listings;
+  private constructor(client) {
+    this.client = client;
+  }
+
+  static async initialize() {
+    const client = await getClient();
+    return new ListingDataSource(client);
+  }
+
+  async getListings(): Promise<Listing[]> {
+    if (!this.client) {
+      throw new Error("Listing Data Source has not been initialized!");
+    }
+    const getDistinctCityQueryString = `SELECT * FROM Listing;`;
+    const res = await this.client.query(getDistinctCityQueryString);
+    const rows = res.rows;
+    return rows;
   }
 
   // We are using a static data set for this small example, but normally
   // this Mutation would *mutate* our underlying data using a database
   // or a REST API.
-  async addListing(listing: Listing): Promise<AddListingMutationResponse> {
-    this.listings.push(listing);
-    console.log(this.listings);
+  async addListing(listing: ListingInput): Promise<AddListingMutationResponse> {
+    // this.listings.push(listing);
+    // console.log(this.listings);
 
     return {
-      code: '200',
+      code: "200",
       success: true,
-      message: 'New listings added!',
-      listing: this.listings[this.listings.length - 1],
+      message: "New listings added!",
+      listing: {
+        mlsId: "1",
+        city: "arnold",
+        state: "mo",
+        listingId: 123,
+        propertyId: 123,
+        zip: "63010",
+        streetLine: "Street",
+        url: "http://google.com",
+      },
+    };
+  }
+}
+
+export class StatDataSource {
+  // Our example static data set
+  //   mlsStatus: String
+  //   price: Int
+  //   sqft: Int
+  //   pricePerSqFt: Int
+  //   lotSize: Int
+  //   beds: Float
+  //   baths: Float
+  //   fullBaths: Float
+  //   partialBaths: Float
+  //   streetLine: String!
+  //   stories: Float
+  //   city: String!
+  //   state: String!
+  //   zip: String!
+  //   soldDate: Int
+  //   propertyType: Int
+  //   yearBuilt: Int
+  //   timeZone: String
+  //   url: String!
+  //   location: String
+  //   propertyId: Int!
+  //   listingId: Int!
+  //   latitude: Float
+  //   longitude: Float
+  //   mlsId: String!
+  //   hoa: Int
+  stats: {
+    medianPrice?: number;
+    modePrice?: number;
+    averagePrice?: number;
+    city?: string;
+    state?: string;
+    zip?: string;
+    beds?: number;
+    baths?: number;
+    averagePricePerSqFt?: number;
+    modePricePerSqFt?: number;
+    medianPricePerSqFt?: number;
+    averageSqFt?: number;
+    modeSqFt?: number;
+    medianSqFt?: number;
+    averageLotSize?: number;
+    modeLotSize?: number;
+    medianLotSize?: number;
+    averageBeds?: number;
+    medianBeds?: number;
+    modeBeds?: number;
+    averageBaths?: number;
+    medianBaths?: number;
+    modeBaths?: number;
+    averageHoa?: number;
+    medianHoa?: number;
+    modeHoa?: number;
+    averageYearBuilt?: number;
+    medianYearBuilt?: number;
+    modeYearBuilt?: number;
+    curDateUtc?: string;
+  }[] = [
+    {
+      medianPrice: 125000,
+      modePrice: 80000,
+      averagePrice: 105000,
+      city: "St. Louis",
+      state: "MO",
+      zip: "63111",
+      beds: 2,
+      baths: 2,
+      averagePricePerSqFt: 125,
+      modePricePerSqFt: 110,
+      medianPricePerSqFt: 115,
+      averageSqFt: 1025,
+      modeSqFt: 2,
+      medianSqFt: 2,
+      averageLotSize: 2,
+      modeLotSize: 2,
+      medianLotSize: 2,
+      averageBeds: 2,
+      medianBeds: 2,
+      modeBeds: 2,
+      averageBaths: 2,
+      medianBaths: 2,
+      modeBaths: 2,
+      averageHoa: 2,
+      medianHoa: 2,
+      modeHoa: 2,
+      averageYearBuilt: 2,
+      medianYearBuilt: 2,
+      modeYearBuilt: 2,
+      curDateUtc: "2022-06-21",
+    },
+  ];
+
+  async getStats(): Promise<Stat[]> {
+    // simulate fetching a list of books
+    const client = await getClient();
+    const getDistinctCityQueryString = `SELECT * FROM Stats;`;
+    const res = await client.query(getDistinctCityQueryString);
+    const rows = res.rows;
+    return rows;
+  }
+
+  // We are using a static data set for this small example, but normally
+  // this Mutation would *mutate* our underlying data using a database
+  // or a REST API.
+  async addStat(stat: StatInput): Promise<AddStatMutationResponse> {
+    this.stats.push(stat);
+    console.log(this.stats);
+
+    return {
+      code: "200",
+      success: true,
+      message: "New stats added!",
+      stat: this.stats[this.stats.length - 1],
     };
   }
 }

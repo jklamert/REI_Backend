@@ -941,7 +941,7 @@
             "description": null,
             "args": [
               {
-                "name": "stats",
+                "name": "stat",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
