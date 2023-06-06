@@ -1,16 +1,15 @@
-
-import type { CodegenConfig } from '@graphql-codegen/cli';
+import { CodegenConfig } from "@graphql-codegen/cli";
+import { defineConfig } from "@eddeee888/gcg-typescript-resolver-files";
 
 const config: CodegenConfig = {
-  overwrite: true,
-  schema: "./src/schema.graphql",
+  schema: "**/schema.graphql",
+  documents: ["src/**/*.tsx"],
+  ignoreNoDocuments: true, // for better experience with the watcher
   generates: {
-    "src/generated/graphql.ts": {
-      plugins: ["typescript", "typescript-resolvers"]
+    "./src/gql/": {
+      preset: "client",
     },
-    "./graphql.schema.json": {
-      plugins: ["introspection"]
-    }
+    "src/schema": defineConfig(),
   },
 };
 

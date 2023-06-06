@@ -1047,33 +1047,25 @@
         "description": null,
         "fields": [
           {
-            "name": "listings",
+            "name": "listing",
             "description": null,
             "args": [],
             "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Listing",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "Listing",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "stats",
+            "name": "stat",
             "description": null,
             "args": [],
             "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Stat",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "Stat",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null

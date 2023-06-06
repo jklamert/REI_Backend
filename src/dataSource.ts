@@ -5,7 +5,7 @@ import {
   StatInput,
   Stat,
   AddStatMutationResponse,
-} from "./generated/graphql";
+} from "./gql/graphql";
 import { getClient } from "../connectionProvider";
 
 export class ListingDataSource {
@@ -20,14 +20,24 @@ export class ListingDataSource {
     return new ListingDataSource(client);
   }
 
-  async getListings(): Promise<Listing[]> {
+  async getListing(): Promise<Listing> {
+    return {
+      mlsId: "1",
+      city: "arnold",
+      state: "mo",
+      listingId: 123,
+      propertyId: 123,
+      zip: "63010",
+      streetLine: "Street",
+      url: "https://google.com",
+    };
     if (!this.client) {
       throw new Error("Listing Data Source has not been initialized!");
     }
     const getDistinctCityQueryString = `SELECT * FROM Listing;`;
     const res = await this.client.query(getDistinctCityQueryString);
     const rows = res.rows;
-    return rows;
+    return rows[0];
   }
 
   // We are using a static data set for this small example, but normally
@@ -49,13 +59,14 @@ export class ListingDataSource {
         propertyId: 123,
         zip: "63010",
         streetLine: "Street",
-        url: "http://google.com",
+        url: "https://google.com",
       },
     };
   }
 }
 
 export class StatDataSource {
+  client = null;
   // Our example static data set
   //   mlsStatus: String
   //   price: Int
@@ -149,27 +160,35 @@ export class StatDataSource {
     },
   ];
 
-  async getStats(): Promise<Stat[]> {
-    // simulate fetching a list of books
+  private constructor(client) {
+    this.client = client;
+  }
+
+  static async initialize() {
     const client = await getClient();
+    return new StatDataSource(client);
+  }
+
+  async getStats(): Promise<Stat[]> {
+    if (!this.client) {
+      throw new Error("Stat object has not been initialized!");
+    }
+
     const getDistinctCityQueryString = `SELECT * FROM Stats;`;
-    const res = await client.query(getDistinctCityQueryString);
+    const res = await this.client.query(getDistinctCityQueryString);
     const rows = res.rows;
     return rows;
   }
 
-  // We are using a static data set for this small example, but normally
-  // this Mutation would *mutate* our underlying data using a database
-  // or a REST API.
   async addStat(stat: StatInput): Promise<AddStatMutationResponse> {
-    this.stats.push(stat);
-    console.log(this.stats);
-
     return {
       code: "200",
       success: true,
       message: "New stats added!",
-      stat: this.stats[this.stats.length - 1],
+      stat: {
+        city: "arnold",
+        state: "MO",
+      },
     };
   }
 }

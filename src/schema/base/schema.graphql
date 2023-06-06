@@ -1,0 +1,14 @@
+type Query
+type Mutation
+
+schema {
+  query: Query
+}
+
+scalar DateTime
+
+interface MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}

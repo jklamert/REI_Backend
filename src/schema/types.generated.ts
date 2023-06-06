@@ -1,92 +1,95 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
+  ID: { input: string | number; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  DateTime: { input: Date | string; output: Date | string; }
 };
 
 export type AddListingMutationResponse = MutationResponse & {
   __typename?: 'AddListingMutationResponse';
-  code: Scalars['String'];
+  code: Scalars['String']['output'];
   listing?: Maybe<Listing>;
-  message: Scalars['String'];
-  success: Scalars['Boolean'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type AddStatMutationResponse = MutationResponse & {
   __typename?: 'AddStatMutationResponse';
-  code: Scalars['String'];
-  message: Scalars['String'];
+  code: Scalars['String']['output'];
+  message: Scalars['String']['output'];
   stat?: Maybe<Stat>;
-  success: Scalars['Boolean'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type Listing = {
   __typename?: 'Listing';
-  baths?: Maybe<Scalars['Float']>;
-  beds?: Maybe<Scalars['Float']>;
-  city: Scalars['String'];
-  fullBaths?: Maybe<Scalars['Float']>;
-  hoa?: Maybe<Scalars['Int']>;
-  latitude?: Maybe<Scalars['Float']>;
-  listingId: Scalars['Int'];
-  location?: Maybe<Scalars['String']>;
-  longitude?: Maybe<Scalars['Float']>;
-  lotSize?: Maybe<Scalars['Int']>;
-  mlsId: Scalars['String'];
-  mlsStatus?: Maybe<Scalars['String']>;
-  partialBaths?: Maybe<Scalars['Float']>;
-  price?: Maybe<Scalars['Int']>;
-  pricePerSqFt?: Maybe<Scalars['Int']>;
-  propertyId: Scalars['Int'];
-  propertyType?: Maybe<Scalars['Int']>;
-  soldDate?: Maybe<Scalars['Int']>;
-  sqft?: Maybe<Scalars['Int']>;
-  state: Scalars['String'];
-  stories?: Maybe<Scalars['Float']>;
-  streetLine: Scalars['String'];
-  timeZone?: Maybe<Scalars['String']>;
-  url: Scalars['String'];
-  yearBuilt?: Maybe<Scalars['Int']>;
-  zip: Scalars['String'];
+  baths?: Maybe<Scalars['Float']['output']>;
+  beds?: Maybe<Scalars['Float']['output']>;
+  city: Scalars['String']['output'];
+  fullBaths?: Maybe<Scalars['Float']['output']>;
+  hoa?: Maybe<Scalars['Int']['output']>;
+  latitude?: Maybe<Scalars['Float']['output']>;
+  listingId: Scalars['Int']['output'];
+  location?: Maybe<Scalars['String']['output']>;
+  longitude?: Maybe<Scalars['Float']['output']>;
+  lotSize?: Maybe<Scalars['Int']['output']>;
+  mlsId: Scalars['String']['output'];
+  mlsStatus?: Maybe<Scalars['String']['output']>;
+  partialBaths?: Maybe<Scalars['Float']['output']>;
+  price?: Maybe<Scalars['Int']['output']>;
+  pricePerSqFt?: Maybe<Scalars['Int']['output']>;
+  propertyId: Scalars['Int']['output'];
+  propertyType?: Maybe<Scalars['Int']['output']>;
+  soldDate?: Maybe<Scalars['Int']['output']>;
+  sqft?: Maybe<Scalars['Int']['output']>;
+  state: Scalars['String']['output'];
+  stories?: Maybe<Scalars['Float']['output']>;
+  streetLine: Scalars['String']['output'];
+  timeZone?: Maybe<Scalars['String']['output']>;
+  url: Scalars['String']['output'];
+  yearBuilt?: Maybe<Scalars['Int']['output']>;
+  zip: Scalars['String']['output'];
 };
 
 export type ListingInput = {
-  baths?: InputMaybe<Scalars['Float']>;
-  beds?: InputMaybe<Scalars['Float']>;
-  city: Scalars['String'];
-  fullBaths?: InputMaybe<Scalars['Float']>;
-  hoa?: InputMaybe<Scalars['Int']>;
-  latitude?: InputMaybe<Scalars['Float']>;
-  listingId: Scalars['Int'];
-  location?: InputMaybe<Scalars['String']>;
-  longitude?: InputMaybe<Scalars['Float']>;
-  lotSize?: InputMaybe<Scalars['Int']>;
-  mlsId: Scalars['String'];
-  mlsStatus?: InputMaybe<Scalars['String']>;
-  partialBaths?: InputMaybe<Scalars['Float']>;
-  price?: InputMaybe<Scalars['Int']>;
-  pricePerSqFt?: InputMaybe<Scalars['Int']>;
-  propertyId: Scalars['Int'];
-  propertyType?: InputMaybe<Scalars['Int']>;
-  soldDate?: InputMaybe<Scalars['Int']>;
-  sqft?: InputMaybe<Scalars['Int']>;
-  state: Scalars['String'];
-  stories?: InputMaybe<Scalars['Float']>;
-  streetLine: Scalars['String'];
-  timeZone?: InputMaybe<Scalars['String']>;
-  url: Scalars['String'];
-  yearBuilt?: InputMaybe<Scalars['Int']>;
-  zip: Scalars['String'];
+  baths?: InputMaybe<Scalars['Float']['input']>;
+  beds?: InputMaybe<Scalars['Float']['input']>;
+  city: Scalars['String']['input'];
+  fullBaths?: InputMaybe<Scalars['Float']['input']>;
+  hoa?: InputMaybe<Scalars['Int']['input']>;
+  latitude?: InputMaybe<Scalars['Float']['input']>;
+  listingId: Scalars['Int']['input'];
+  location?: InputMaybe<Scalars['String']['input']>;
+  longitude?: InputMaybe<Scalars['Float']['input']>;
+  lotSize?: InputMaybe<Scalars['Int']['input']>;
+  mlsId: Scalars['String']['input'];
+  mlsStatus?: InputMaybe<Scalars['String']['input']>;
+  partialBaths?: InputMaybe<Scalars['Float']['input']>;
+  price?: InputMaybe<Scalars['Int']['input']>;
+  pricePerSqFt?: InputMaybe<Scalars['Int']['input']>;
+  propertyId: Scalars['Int']['input'];
+  propertyType?: InputMaybe<Scalars['Int']['input']>;
+  soldDate?: InputMaybe<Scalars['Int']['input']>;
+  sqft?: InputMaybe<Scalars['Int']['input']>;
+  state: Scalars['String']['input'];
+  stories?: InputMaybe<Scalars['Float']['input']>;
+  streetLine: Scalars['String']['input'];
+  timeZone?: InputMaybe<Scalars['String']['input']>;
+  url: Scalars['String']['input'];
+  yearBuilt?: InputMaybe<Scalars['Int']['input']>;
+  zip: Scalars['String']['input'];
 };
 
 export type Mutation = {
@@ -106,84 +109,84 @@ export type MutationAddStatArgs = {
 };
 
 export type MutationResponse = {
-  code: Scalars['String'];
-  message: Scalars['String'];
-  success: Scalars['Boolean'];
+  code: Scalars['String']['output'];
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  listings?: Maybe<Array<Maybe<Listing>>>;
-  stats?: Maybe<Array<Maybe<Stat>>>;
+  listing?: Maybe<Listing>;
+  stat?: Maybe<Stat>;
 };
 
 export type Stat = {
   __typename?: 'Stat';
-  averageBaths?: Maybe<Scalars['Float']>;
-  averageBeds?: Maybe<Scalars['Float']>;
-  averageHoa?: Maybe<Scalars['Float']>;
-  averageLotSize?: Maybe<Scalars['Float']>;
-  averagePrice?: Maybe<Scalars['Float']>;
-  averagePricePerSqFt?: Maybe<Scalars['Float']>;
-  averageSqFt?: Maybe<Scalars['Float']>;
-  averageYearBuilt?: Maybe<Scalars['Float']>;
-  baths?: Maybe<Scalars['Float']>;
-  beds?: Maybe<Scalars['Float']>;
-  city?: Maybe<Scalars['String']>;
-  curDateUtc?: Maybe<Scalars['String']>;
-  medianBaths?: Maybe<Scalars['Float']>;
-  medianBeds?: Maybe<Scalars['Float']>;
-  medianHoa?: Maybe<Scalars['Float']>;
-  medianLotSize?: Maybe<Scalars['Float']>;
+  averageBaths?: Maybe<Scalars['Float']['output']>;
+  averageBeds?: Maybe<Scalars['Float']['output']>;
+  averageHoa?: Maybe<Scalars['Float']['output']>;
+  averageLotSize?: Maybe<Scalars['Float']['output']>;
+  averagePrice?: Maybe<Scalars['Float']['output']>;
+  averagePricePerSqFt?: Maybe<Scalars['Float']['output']>;
+  averageSqFt?: Maybe<Scalars['Float']['output']>;
+  averageYearBuilt?: Maybe<Scalars['Float']['output']>;
+  baths?: Maybe<Scalars['Float']['output']>;
+  beds?: Maybe<Scalars['Float']['output']>;
+  city?: Maybe<Scalars['String']['output']>;
+  curDateUtc?: Maybe<Scalars['String']['output']>;
+  medianBaths?: Maybe<Scalars['Float']['output']>;
+  medianBeds?: Maybe<Scalars['Float']['output']>;
+  medianHoa?: Maybe<Scalars['Float']['output']>;
+  medianLotSize?: Maybe<Scalars['Float']['output']>;
   /** Fields that you can retrieve from a stat object. */
-  medianPrice?: Maybe<Scalars['Float']>;
-  medianPricePerSqFt?: Maybe<Scalars['Float']>;
-  medianSqFt?: Maybe<Scalars['Float']>;
-  medianYearBuilt?: Maybe<Scalars['Float']>;
-  modeBaths?: Maybe<Scalars['Int']>;
-  modeBeds?: Maybe<Scalars['Int']>;
-  modeHoa?: Maybe<Scalars['Int']>;
-  modeLotSize?: Maybe<Scalars['Int']>;
-  modePrice?: Maybe<Scalars['Int']>;
-  modePricePerSqFt?: Maybe<Scalars['Int']>;
-  modeSqFt?: Maybe<Scalars['Int']>;
-  modeYearBuilt?: Maybe<Scalars['Int']>;
-  state?: Maybe<Scalars['String']>;
-  zip?: Maybe<Scalars['String']>;
+  medianPrice?: Maybe<Scalars['Float']['output']>;
+  medianPricePerSqFt?: Maybe<Scalars['Float']['output']>;
+  medianSqFt?: Maybe<Scalars['Float']['output']>;
+  medianYearBuilt?: Maybe<Scalars['Float']['output']>;
+  modeBaths?: Maybe<Scalars['Int']['output']>;
+  modeBeds?: Maybe<Scalars['Int']['output']>;
+  modeHoa?: Maybe<Scalars['Int']['output']>;
+  modeLotSize?: Maybe<Scalars['Int']['output']>;
+  modePrice?: Maybe<Scalars['Int']['output']>;
+  modePricePerSqFt?: Maybe<Scalars['Int']['output']>;
+  modeSqFt?: Maybe<Scalars['Int']['output']>;
+  modeYearBuilt?: Maybe<Scalars['Int']['output']>;
+  state?: Maybe<Scalars['String']['output']>;
+  zip?: Maybe<Scalars['String']['output']>;
 };
 
 export type StatInput = {
-  averageBaths?: InputMaybe<Scalars['Float']>;
-  averageBeds?: InputMaybe<Scalars['Float']>;
-  averageHoa?: InputMaybe<Scalars['Float']>;
-  averageLotSize?: InputMaybe<Scalars['Float']>;
-  averagePrice?: InputMaybe<Scalars['Float']>;
-  averagePricePerSqFt?: InputMaybe<Scalars['Float']>;
-  averageSqFt?: InputMaybe<Scalars['Float']>;
-  averageYearBuilt?: InputMaybe<Scalars['Float']>;
-  baths?: InputMaybe<Scalars['Float']>;
-  beds?: InputMaybe<Scalars['Float']>;
-  city?: InputMaybe<Scalars['String']>;
-  curDateUtc?: InputMaybe<Scalars['String']>;
-  medianBaths?: InputMaybe<Scalars['Float']>;
-  medianBeds?: InputMaybe<Scalars['Float']>;
-  medianHoa?: InputMaybe<Scalars['Float']>;
-  medianLotSize?: InputMaybe<Scalars['Float']>;
+  averageBaths?: InputMaybe<Scalars['Float']['input']>;
+  averageBeds?: InputMaybe<Scalars['Float']['input']>;
+  averageHoa?: InputMaybe<Scalars['Float']['input']>;
+  averageLotSize?: InputMaybe<Scalars['Float']['input']>;
+  averagePrice?: InputMaybe<Scalars['Float']['input']>;
+  averagePricePerSqFt?: InputMaybe<Scalars['Float']['input']>;
+  averageSqFt?: InputMaybe<Scalars['Float']['input']>;
+  averageYearBuilt?: InputMaybe<Scalars['Float']['input']>;
+  baths?: InputMaybe<Scalars['Float']['input']>;
+  beds?: InputMaybe<Scalars['Float']['input']>;
+  city?: InputMaybe<Scalars['String']['input']>;
+  curDateUtc?: InputMaybe<Scalars['String']['input']>;
+  medianBaths?: InputMaybe<Scalars['Float']['input']>;
+  medianBeds?: InputMaybe<Scalars['Float']['input']>;
+  medianHoa?: InputMaybe<Scalars['Float']['input']>;
+  medianLotSize?: InputMaybe<Scalars['Float']['input']>;
   /** Fields responsible for creating a new stat object. */
-  medianPrice?: InputMaybe<Scalars['Float']>;
-  medianPricePerSqFt?: InputMaybe<Scalars['Float']>;
-  medianSqFt?: InputMaybe<Scalars['Float']>;
-  medianYearBuilt?: InputMaybe<Scalars['Float']>;
-  modeBaths?: InputMaybe<Scalars['Int']>;
-  modeBeds?: InputMaybe<Scalars['Int']>;
-  modeHoa?: InputMaybe<Scalars['Int']>;
-  modeLotSize?: InputMaybe<Scalars['Int']>;
-  modePrice?: InputMaybe<Scalars['Int']>;
-  modePricePerSqFt?: InputMaybe<Scalars['Int']>;
-  modeSqFt?: InputMaybe<Scalars['Int']>;
-  modeYearBuilt?: InputMaybe<Scalars['Int']>;
-  state?: InputMaybe<Scalars['String']>;
-  zip?: InputMaybe<Scalars['String']>;
+  medianPrice?: InputMaybe<Scalars['Float']['input']>;
+  medianPricePerSqFt?: InputMaybe<Scalars['Float']['input']>;
+  medianSqFt?: InputMaybe<Scalars['Float']['input']>;
+  medianYearBuilt?: InputMaybe<Scalars['Float']['input']>;
+  modeBaths?: InputMaybe<Scalars['Int']['input']>;
+  modeBeds?: InputMaybe<Scalars['Int']['input']>;
+  modeHoa?: InputMaybe<Scalars['Int']['input']>;
+  modeLotSize?: InputMaybe<Scalars['Int']['input']>;
+  modePrice?: InputMaybe<Scalars['Int']['input']>;
+  modePricePerSqFt?: InputMaybe<Scalars['Int']['input']>;
+  modeSqFt?: InputMaybe<Scalars['Int']['input']>;
+  modeYearBuilt?: InputMaybe<Scalars['Int']['input']>;
+  state?: InputMaybe<Scalars['String']['input']>;
+  zip?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -254,39 +257,45 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 ) => TResult | Promise<TResult>;
 
 
+/** Mapping of interface types */
+export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
+  MutationResponse: ( AddListingMutationResponse & { __typename: 'AddListingMutationResponse' } ) | ( AddStatMutationResponse & { __typename: 'AddStatMutationResponse' } );
+};
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   AddListingMutationResponse: ResolverTypeWrapper<AddListingMutationResponse>;
+  String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   AddStatMutationResponse: ResolverTypeWrapper<AddStatMutationResponse>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Float: ResolverTypeWrapper<Scalars['Float']>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   Listing: ResolverTypeWrapper<Listing>;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   ListingInput: ListingInput;
   Mutation: ResolverTypeWrapper<{}>;
-  MutationResponse: ResolversTypes['AddListingMutationResponse'] | ResolversTypes['AddStatMutationResponse'];
+  MutationResponse: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['MutationResponse']>;
   Query: ResolverTypeWrapper<{}>;
   Stat: ResolverTypeWrapper<Stat>;
   StatInput: StatInput;
-  String: ResolverTypeWrapper<Scalars['String']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   AddListingMutationResponse: AddListingMutationResponse;
+  String: Scalars['String']['output'];
+  Boolean: Scalars['Boolean']['output'];
   AddStatMutationResponse: AddStatMutationResponse;
-  Boolean: Scalars['Boolean'];
-  Float: Scalars['Float'];
-  Int: Scalars['Int'];
+  DateTime: Scalars['DateTime']['output'];
   Listing: Listing;
+  Float: Scalars['Float']['output'];
+  Int: Scalars['Int']['output'];
   ListingInput: ListingInput;
   Mutation: {};
-  MutationResponse: ResolversParentTypes['AddListingMutationResponse'] | ResolversParentTypes['AddStatMutationResponse'];
+  MutationResponse: ResolversInterfaceTypes<ResolversParentTypes>['MutationResponse'];
   Query: {};
   Stat: Stat;
   StatInput: StatInput;
-  String: Scalars['String'];
 };
 
 export type AddListingMutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddListingMutationResponse'] = ResolversParentTypes['AddListingMutationResponse']> = {
@@ -304,6 +313,10 @@ export type AddStatMutationResponseResolvers<ContextType = any, ParentType exten
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
+
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
 
 export type ListingResolvers<ContextType = any, ParentType extends ResolversParentTypes['Listing'] = ResolversParentTypes['Listing']> = {
   baths?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
@@ -341,15 +354,15 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type MutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = {
-  __resolveType: TypeResolveFn<'AddListingMutationResponse' | 'AddStatMutationResponse', ParentType, ContextType>;
+  __resolveType?: TypeResolveFn<'AddListingMutationResponse' | 'AddStatMutationResponse', ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  listings?: Resolver<Maybe<Array<Maybe<ResolversTypes['Listing']>>>, ParentType, ContextType>;
-  stats?: Resolver<Maybe<Array<Maybe<ResolversTypes['Stat']>>>, ParentType, ContextType>;
+  listing?: Resolver<Maybe<ResolversTypes['Listing']>, ParentType, ContextType>;
+  stat?: Resolver<Maybe<ResolversTypes['Stat']>, ParentType, ContextType>;
 };
 
 export type StatResolvers<ContextType = any, ParentType extends ResolversParentTypes['Stat'] = ResolversParentTypes['Stat']> = {
@@ -389,6 +402,7 @@ export type StatResolvers<ContextType = any, ParentType extends ResolversParentT
 export type Resolvers<ContextType = any> = {
   AddListingMutationResponse?: AddListingMutationResponseResolvers<ContextType>;
   AddStatMutationResponse?: AddStatMutationResponseResolvers<ContextType>;
+  DateTime?: GraphQLScalarType;
   Listing?: ListingResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   MutationResponse?: MutationResponseResolvers<ContextType>;
