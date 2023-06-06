@@ -15,12 +15,19 @@ export class ListingDataSource {
     this.client = client;
   }
 
+  private isInitialized() {
+    if (!this.client) {
+      throw new Error("ListingDataSource object has not been initialized!");
+    }
+  }
+
   static async initialize() {
     const client = await getClient();
     return new ListingDataSource(client);
   }
 
   async getListing(): Promise<Listing> {
+    this.isInitialized();
     return {
       mlsId: "1",
       city: "arnold",
@@ -31,9 +38,7 @@ export class ListingDataSource {
       streetLine: "Street",
       url: "https://google.com",
     };
-    if (!this.client) {
-      throw new Error("Listing Data Source has not been initialized!");
-    }
+
     const getDistinctCityQueryString = `SELECT * FROM Listing;`;
     const res = await this.client.query(getDistinctCityQueryString);
     const rows = res.rows;
@@ -46,7 +51,7 @@ export class ListingDataSource {
   async addListing(listing: ListingInput): Promise<AddListingMutationResponse> {
     // this.listings.push(listing);
     // console.log(this.listings);
-
+    this.isInitialized();
     return {
       code: "200",
       success: true,
@@ -169,10 +174,14 @@ export class StatDataSource {
     return new StatDataSource(client);
   }
 
-  async getStats(): Promise<Stat[]> {
+  private isInitialized() {
     if (!this.client) {
       throw new Error("Stat object has not been initialized!");
     }
+  }
+
+  async getStats(): Promise<Stat[]> {
+    this.isInitialized();
 
     const getDistinctCityQueryString = `SELECT * FROM Stats;`;
     const res = await this.client.query(getDistinctCityQueryString);
@@ -181,6 +190,7 @@ export class StatDataSource {
   }
 
   async addStat(stat: StatInput): Promise<AddStatMutationResponse> {
+    this.isInitialized();
     return {
       code: "200",
       success: true,
