@@ -1,12 +1,11 @@
 import { ListingDataSource, StatDataSource } from "../src/dataSource";
 import { MyContext } from "../src/index";
-test("Apollo Server", () => {
-  const listingAPI = new ListingDataSource();
-  const statAPI = new StatDataSource();
+test("Apollo Server", async () => {
+  const listingAPI = await ListingDataSource.initialize();
+  const statAPI = await StatDataSource.initialize;
 
   // ensure our server's context is typed correctly
   const context = {
-    listening: { port: 4000 },
     token: "",
     dataSources: {
       listingAPI: listingAPI,
@@ -40,7 +39,6 @@ test("Apollo Server", () => {
       },
       {
         contextValue: {
-          listens: { port: 4000 },
           token: "tk",
           user: { id: 1, email: "a@a.a" },
           dataSources: {
