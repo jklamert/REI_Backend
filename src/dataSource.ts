@@ -5,7 +5,7 @@ import {
   StatInput,
   Stat,
   AddStatMutationResponse,
-} from "./gql/graphql";
+} from "./__generated__/resolvers-types";
 import { getClient } from "../connectionProvider";
 
 export class ListingDataSource {

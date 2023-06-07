@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { MyContext } from '../index';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -14,7 +15,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  DateTime: { input: Date | string; output: Date | string; }
+  DateTime: { input: any; output: any; }
 };
 
 export type AddListingMutationResponse = MutationResponse & {
@@ -117,6 +118,7 @@ export type MutationResponse = {
 export type Query = {
   __typename?: 'Query';
   listing?: Maybe<Listing>;
+  numberSix: Scalars['Int']['output'];
   stat?: Maybe<Stat>;
 };
 
@@ -189,7 +191,8 @@ export type StatInput = {
   zip?: InputMaybe<Scalars['String']['input']>;
 };
 
-
+export type WithIndex<TObject> = TObject & Record<string, any>;
+export type ResolversObject<TObject> = WithIndex<TObject>;
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -258,67 +261,67 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 
 /** Mapping of interface types */
-export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  MutationResponse: ( AddListingMutationResponse & { __typename: 'AddListingMutationResponse' } ) | ( AddStatMutationResponse & { __typename: 'AddStatMutationResponse' } );
-};
+export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = ResolversObject<{
+  MutationResponse: ( AddListingMutationResponse ) | ( AddStatMutationResponse );
+}>;
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = {
+export type ResolversTypes = ResolversObject<{
   AddListingMutationResponse: ResolverTypeWrapper<AddListingMutationResponse>;
-  String: ResolverTypeWrapper<Scalars['String']['output']>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   AddStatMutationResponse: ResolverTypeWrapper<AddStatMutationResponse>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
-  Listing: ResolverTypeWrapper<Listing>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Listing: ResolverTypeWrapper<Listing>;
   ListingInput: ListingInput;
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['MutationResponse']>;
   Query: ResolverTypeWrapper<{}>;
   Stat: ResolverTypeWrapper<Stat>;
   StatInput: StatInput;
-};
+  String: ResolverTypeWrapper<Scalars['String']['output']>;
+}>;
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = {
+export type ResolversParentTypes = ResolversObject<{
   AddListingMutationResponse: AddListingMutationResponse;
-  String: Scalars['String']['output'];
-  Boolean: Scalars['Boolean']['output'];
   AddStatMutationResponse: AddStatMutationResponse;
+  Boolean: Scalars['Boolean']['output'];
   DateTime: Scalars['DateTime']['output'];
-  Listing: Listing;
   Float: Scalars['Float']['output'];
   Int: Scalars['Int']['output'];
+  Listing: Listing;
   ListingInput: ListingInput;
   Mutation: {};
   MutationResponse: ResolversInterfaceTypes<ResolversParentTypes>['MutationResponse'];
   Query: {};
   Stat: Stat;
   StatInput: StatInput;
-};
+  String: Scalars['String']['output'];
+}>;
 
-export type AddListingMutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddListingMutationResponse'] = ResolversParentTypes['AddListingMutationResponse']> = {
+export type AddListingMutationResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['AddListingMutationResponse'] = ResolversParentTypes['AddListingMutationResponse']> = ResolversObject<{
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   listing?: Resolver<Maybe<ResolversTypes['Listing']>, ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type AddStatMutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddStatMutationResponse'] = ResolversParentTypes['AddStatMutationResponse']> = {
+export type AddStatMutationResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['AddStatMutationResponse'] = ResolversParentTypes['AddStatMutationResponse']> = ResolversObject<{
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stat?: Resolver<Maybe<ResolversTypes['Stat']>, ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
 
-export type ListingResolvers<ContextType = any, ParentType extends ResolversParentTypes['Listing'] = ResolversParentTypes['Listing']> = {
+export type ListingResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Listing'] = ResolversParentTypes['Listing']> = ResolversObject<{
   baths?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   beds?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   city?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -346,26 +349,27 @@ export type ListingResolvers<ContextType = any, ParentType extends ResolversPare
   yearBuilt?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   zip?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   addListing?: Resolver<Maybe<ResolversTypes['AddListingMutationResponse']>, ParentType, ContextType, RequireFields<MutationAddListingArgs, 'listing'>>;
   addStat?: Resolver<Maybe<ResolversTypes['AddStatMutationResponse']>, ParentType, ContextType, RequireFields<MutationAddStatArgs, 'stat'>>;
-};
+}>;
 
-export type MutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = {
-  __resolveType?: TypeResolveFn<'AddListingMutationResponse' | 'AddStatMutationResponse', ParentType, ContextType>;
+export type MutationResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'AddListingMutationResponse' | 'AddStatMutationResponse', ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-};
+}>;
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+export type QueryResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   listing?: Resolver<Maybe<ResolversTypes['Listing']>, ParentType, ContextType>;
+  numberSix?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   stat?: Resolver<Maybe<ResolversTypes['Stat']>, ParentType, ContextType>;
-};
+}>;
 
-export type StatResolvers<ContextType = any, ParentType extends ResolversParentTypes['Stat'] = ResolversParentTypes['Stat']> = {
+export type StatResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Stat'] = ResolversParentTypes['Stat']> = ResolversObject<{
   averageBaths?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   averageBeds?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   averageHoa?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
@@ -397,9 +401,9 @@ export type StatResolvers<ContextType = any, ParentType extends ResolversParentT
   state?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   zip?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type Resolvers<ContextType = any> = {
+export type Resolvers<ContextType = MyContext> = ResolversObject<{
   AddListingMutationResponse?: AddListingMutationResponseResolvers<ContextType>;
   AddStatMutationResponse?: AddStatMutationResponseResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
@@ -408,5 +412,5 @@ export type Resolvers<ContextType = any> = {
   MutationResponse?: MutationResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Stat?: StatResolvers<ContextType>;
-};
+}>;
 

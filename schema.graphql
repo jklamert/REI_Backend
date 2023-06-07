@@ -1,3 +1,87 @@
+scalar DateTime
+
+interface MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+}
+
+type Query {
+  listing: Listing
+  stat: Stat
+  numberSix: Int!
+}
+
+type Listing {
+  mlsStatus: String
+  price: Int
+  sqft: Int
+  pricePerSqFt: Int
+  lotSize: Int
+  beds: Float
+  baths: Float
+  fullBaths: Float
+  partialBaths: Float
+  streetLine: String!
+  stories: Float
+  city: String!
+  state: String!
+  zip: String!
+  soldDate: Int
+  propertyType: Int
+  yearBuilt: Int
+  timeZone: String
+  url: String!
+  location: String
+  propertyId: Int!
+  listingId: Int!
+  latitude: Float
+  longitude: Float
+  mlsId: String!
+  hoa: Int
+}
+
+input ListingInput {
+  mlsStatus: String
+  price: Int
+  sqft: Int
+  pricePerSqFt: Int
+  lotSize: Int
+  beds: Float
+  baths: Float
+  fullBaths: Float
+  partialBaths: Float
+  streetLine: String!
+  stories: Float
+  city: String!
+  state: String!
+  zip: String!
+  soldDate: Int
+  propertyType: Int
+  yearBuilt: Int
+  timeZone: String
+  url: String!
+  location: String
+  propertyId: Int!
+  listingId: Int!
+  latitude: Float
+  longitude: Float
+  mlsId: String!
+  hoa: Int
+}
+
+type AddListingMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  listing: Listing
+}
+
+type Mutation {
+  addListing(listing: ListingInput!): AddListingMutationResponse
+  addStat(stat: StatInput!): AddStatMutationResponse
+}
+
 type Stat {
   "Fields that you can retrieve from a stat object."
   medianPrice: Float
@@ -66,10 +150,6 @@ input StatInput {
   curDateUtc: String
 }
 
-extend type Query {
-  stat: Stat
-}
-
 type AddStatMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
@@ -77,6 +157,7 @@ type AddStatMutationResponse implements MutationResponse {
   stat: Stat
 }
 
-extend type Mutation {
-  addStat(stat: StatInput!): AddStatMutationResponse
+schema {
+  query: Query
+  mutation: Mutation
 }
