@@ -11,8 +11,6 @@ import {
 import { resolvers } from "./resolvers.js";
 import { readFileSync } from "fs";
 
-// Note: this only works locally because it relies on `npm` routing
-// from the root directory of the project.
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 
 export interface MyContext {
@@ -79,8 +77,8 @@ const { url } = await startStandaloneServer(server, {
 
 console.log(`🚀  Server ready at: ${url}`);
 
-const response = await server.executeOperation({
-  query: "query numberSix {  }",
-  variables: { name: "world" },
-});
-console.log("Response: ", response);
+// const response = await server.executeOperation({
+//   query: "query numberSix {  }",
+//   variables: { name: "world" },
+// });
+// console.log("Response: ", response);

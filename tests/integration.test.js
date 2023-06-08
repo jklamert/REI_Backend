@@ -1,6 +1,10 @@
 import { describe } from "node:test";
 import { ListingDataSource, StatDataSource } from "../src/dataSource";
 import { MyContext } from "../src/index";
+import { resolvers } from "../src/resolvers";
+import { readFileSync } from "fs";
+
+const typeDefs = readFileSync("../schema.graphql", { encoding: "utf-8" });
 
 const listingAPI = await ListingDataSource.initialize();
 const statAPI = await StatDataSource.initialize();

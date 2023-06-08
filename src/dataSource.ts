@@ -6,7 +6,38 @@ import {
   Stat,
   AddStatMutationResponse,
 } from "./__generated__/resolvers-types";
-import { getClient } from "../connectionProvider";
+
+import pg from "pg";
+const { Pool, Client } = pg;
+
+async function getPool() {
+  return new Pool({
+    max: 20,
+    connectionString: `postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}:5432/${process.env.DATABASE}`,
+    idleTimeoutMillis: 30000,
+  });
+}
+
+/**
+ * Method to get a sql client to perform queries with.
+ */
+async function getClient() {
+  try {
+    const client = new Client({
+      user: process.env.DATABASE_USER,
+      host: process.env.DATABASE_HOST, //"localhost", //host.docker.internal
+      database: process.env.DATABASE,
+      password: process.env.DATABASE_PASSWORD,
+      port: 5432,
+    });
+    await client.connect();
+    return client;
+  } catch (e) {
+    console.error(e);
+    //Fail early because we have no DB connection.
+    process.exit(0);
+  }
+}
 
 export class ListingDataSource {
   client = null;
