@@ -68,8 +68,8 @@ const { url } = await startStandaloneServer(server, {
       listen: { port: 4000 },
       token: req.headers.authorization || "",
       dataSources: {
-        listingAPI: await ListingDataSource.initialize(),
-        statAPI: await StatDataSource.initialize(),
+        listingAPI: new ListingDataSource(),
+        statAPI: new StatDataSource(),
       },
     };
   },

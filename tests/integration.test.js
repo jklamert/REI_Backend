@@ -1,59 +1,91 @@
-import { describe } from "node:test";
 import { ListingDataSource, StatDataSource } from "../src/dataSource";
-import { MyContext } from "../src/index";
+// import { MyContext } from "../src/context";
 import { resolvers } from "../src/resolvers";
 import { readFileSync } from "fs";
+import { describe, expect, it } from "@jest/globals";
+import { ApolloServer } from "@apollo/server";
 
-const typeDefs = readFileSync("../schema.graphql", { encoding: "utf-8" });
+import { ApolloServerErrorCode } from "@apollo/server/errors";
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from "@apollo/server/plugin/landingPage/default";
 
-const listingAPI = await ListingDataSource.initialize();
-const statAPI = await StatDataSource.initialize();
+describe("Apollo Server", () => {
+  const typeDefs = readFileSync("schema.graphql", {
+    encoding: "utf-8",
+  });
 
-// ensure our server's context is typed correctly
-const context = {
-  token: "",
-  dataSources: {
-    listingAPI: listingAPI,
-    statAPI: statAPI,
-  },
-};
+  // let listingAPI = null;
+  // ListingDataSource.initialize()
+  //   .then((src) => {
+  //     listingAPI = src;
+  //   })
+  //   .catch((e) => {
+  //     throw expect;
+  //   });
 
-// create a test server to test against, using our production typeDefs,
-// resolvers, and dataSources.
-const server =
-  new ApolloServer() <
-  MyContext >
-  {
-    typeDefs,
-    resolvers,
+  // let statAPI = null;
+  // StatDataSource.initialize()
+  //   .then((src) => {
+  //     statAPI = src;
+  //   })
+  //   .catch((e) => {
+  //     throw expect;
+  //   });
+
+  const context = {
+    token: "",
+    dataSources: {
+      ListingAPI: new ListingDataSource(),
+      StatAPI: new StatDataSource(),
+    },
   };
 
-// mock the dataSource's underlying fetch methods
-// listingAPI.get = jest.fn(() => [mockLaunchResponse]);
-// statAPI.store = mockStore;
-// statAPI.store.trips.findAll.mockReturnValueOnce([
-//   { dataValues: { launchId: 1 } },
-// ]);
+  const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers,
+    formatError: (formattedError, error) => {
+      if (
+        formattedError.extensions.code ===
+        ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED
+      ) {
+        return {
+          ...formattedError,
+          message:
+            "Your query doesn't match the schema. Try double-checking it!",
+        };
+      }
 
-describe("Apollo Server", async () => {
-  it("fetches single listing", async () => {
+      return formattedError;
+    },
+    plugins: [
+      process.env.NODE_ENV === "production"
+        ? ApolloServerPluginLandingPageProductionDefault()
+        : ApolloServerPluginLandingPageLocalDefault({ embed: false }),
+    ],
+  });
+
+  it("fetches the first listing", async () => {
     // run the query against the server and snapshot the output
-    const res = await server.executeOperation(
+    const GET_LISTING = `query ExampleQuery {
+      listing {
+        city
+        state
+      }
+    }`;
+    const response = await server.executeOperation(
       {
         query: GET_LISTING,
-        variables: { id: 1 },
+        variables: null,
       },
       {
-        contextValue: {
-          token: "tk",
-          dataSources: {
-            statAPI: statAPI,
-            listingAPI: listingAPI,
-          },
-        },
+        contextValue: context,
       }
     );
 
-    expect(res).toMatchSnapshot();
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+    expect(response.body.singleResult.data.city).toBe("Arnold");
   });
 });

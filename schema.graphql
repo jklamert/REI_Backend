@@ -7,9 +7,8 @@ interface MutationResponse {
 }
 
 type Query {
-  listing: Listing
-  stat: Stat
-  numberSix: Int!
+  listing(listingId: Int!): Listing
+  stats(city: String, state: String, curDateUtc: String): [Stat]
 }
 
 type Listing {

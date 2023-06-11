@@ -118,8 +118,19 @@ export type MutationResponse = {
 export type Query = {
   __typename?: 'Query';
   listing?: Maybe<Listing>;
-  numberSix: Scalars['Int']['output'];
-  stat?: Maybe<Stat>;
+  stats?: Maybe<Array<Maybe<Stat>>>;
+};
+
+
+export type QueryListingArgs = {
+  listingId: Scalars['Int']['input'];
+};
+
+
+export type QueryStatsArgs = {
+  city?: InputMaybe<Scalars['String']['input']>;
+  curDateUtc?: InputMaybe<Scalars['String']['input']>;
+  state?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Stat = {
@@ -364,9 +375,8 @@ export type MutationResponseResolvers<ContextType = MyContext, ParentType extend
 }>;
 
 export type QueryResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  listing?: Resolver<Maybe<ResolversTypes['Listing']>, ParentType, ContextType>;
-  numberSix?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  stat?: Resolver<Maybe<ResolversTypes['Stat']>, ParentType, ContextType>;
+  listing?: Resolver<Maybe<ResolversTypes['Listing']>, ParentType, ContextType, RequireFields<QueryListingArgs, 'listingId'>>;
+  stats?: Resolver<Maybe<Array<Maybe<ResolversTypes['Stat']>>>, ParentType, ContextType, Partial<QueryStatsArgs>>;
 }>;
 
 export type StatResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Stat'] = ResolversParentTypes['Stat']> = ResolversObject<{

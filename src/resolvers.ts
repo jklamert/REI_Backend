@@ -4,14 +4,18 @@ import { MyContext } from ".";
 import { Resolvers } from "./__generated__/resolvers-types";
 export const resolvers: Resolvers = {
   Query: {
-    listing: async (_parent, _arg, _context: MyContext) => {
-      return await _context.dataSources.listingAPI.getListing();
+    listing: async (parent, args, contextValue, info) => {
+      return await contextValue.dataSources.listingAPI.getListing(
+        args.listingId
+      );
     },
-    numberSix() {
-      return 6;
+    stats: async (parent, args, contextValue, info) => {
+      const { city, state, curDateUtc } = args;
+      return await contextValue.dataSources.statAPI.getStats(
+        city,
+        state,
+        curDateUtc
+      );
     },
-    // stat: async (_parent, _arg, _context: MyContext) => {
-    //     return await _context.dataSources.statAPI.getStats();
-    //   },
   },
 };
