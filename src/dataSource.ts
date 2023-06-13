@@ -7,15 +7,23 @@ import {
   AddStatMutationResponse,
 } from "./__generated__/resolvers-types";
 
-import pg from "pg";
+import pg, { PoolClient } from "pg";
 const { Pool } = pg;
 
 async function getPool() {
-  return new Pool({
+  const pool = new Pool({
     max: 20,
-    connectionString: `postgres://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}:5432/${process.env.DATABASE}`,
+    database: "test", //process.env.DATABASE,
+    host: process.env.DATABASE_HOST,
+    password: process.env.DATABASE_PASSWORD,
+    user: process.env.DATABASE_USER,
+    port: 5432,
     idleTimeoutMillis: 30000,
   });
+  pool.on("error", (err: Error, client: PoolClient) => {
+    console.error(err);
+  });
+  return pool;
 }
 
 export class ListingDataSource {
@@ -31,20 +39,72 @@ export class ListingDataSource {
   // this Mutation would *mutate* our underlying data using a database
   // or a REST API.
   async addListing(listing: ListingInput): Promise<AddListingMutationResponse> {
+    const {
+      mlsStatus,
+      price,
+      sqft,
+      pricePerSqFt,
+      lotSize,
+      beds,
+      baths,
+      fullBaths,
+      partialBaths,
+      streetLine,
+      stories,
+      city,
+      state,
+      zip,
+      soldDate,
+      propertyType,
+      yearBuilt,
+      timeZone,
+      url,
+      location,
+      propertyId,
+      listingId,
+      latitude,
+      longitude,
+      mlsId,
+      hoa,
+    } = listing;
+    const insertQuery = `INSERT INTO public.listing(
+      "mlsStatus", price, sqft, "pricePerSqFt", "lotSize", beds, baths, "fullBaths", "partialBaths", "streetLine", stories, city, state, zip, "soldDate", "propertyType", "yearBuilt", "timeZone", url, location, "propertyId", "listingId", latitude, longitude, "mlsId", hoa)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26) RETURNING *;`;
+    const poolObj = await getPool();
+    const res = await poolObj.query(insertQuery, [
+      mlsStatus,
+      price,
+      sqft,
+      pricePerSqFt,
+      lotSize,
+      beds,
+      baths,
+      fullBaths,
+      partialBaths,
+      streetLine,
+      stories,
+      city,
+      state,
+      zip,
+      soldDate,
+      propertyType,
+      yearBuilt,
+      timeZone,
+      url,
+      location,
+      propertyId,
+      listingId,
+      latitude,
+      longitude,
+      mlsId,
+      hoa,
+    ]);
+
     return {
       code: "200",
       success: true,
-      message: "New listings added!",
-      listing: {
-        mlsId: "1",
-        city: "arnold",
-        state: "mo",
-        listingId: 123,
-        propertyId: 123,
-        zip: "63010",
-        streetLine: "Street",
-        url: "https://google.com",
-      },
+      message: "New listing added!",
+      listing: res.rows[0],
     };
   }
 }
@@ -63,14 +123,79 @@ export class StatDataSource {
   }
 
   async addStat(stat: StatInput): Promise<AddStatMutationResponse> {
+    const {
+      medianPrice,
+      modePrice,
+      averagePrice,
+      city,
+      state,
+      zip,
+      beds,
+      baths,
+      averagePricePerSqFt,
+      modePricePerSqFt,
+      medianPricePerSqFt,
+      averageSqFt,
+      modeSqFt,
+      medianSqFt,
+      averageLotSize,
+      modeLotSize,
+      medianLotSize,
+      averageBeds,
+      medianBeds,
+      modeBeds,
+      averageBaths,
+      medianBaths,
+      modeBaths,
+      averageHoa,
+      medianHoa,
+      modeHoa,
+      averageYearBuilt,
+      medianYearBuilt,
+      modeYearBuilt,
+      curDateUtc,
+    } = stat;
+    const poolObj = await getPool();
+    const addStatQuery = `INSERT INTO public.stats(
+      "medianPrice", "modePrice", "averagePrice", city, state, zip, beds, baths, "averagePricePerSqFt", "modePricePerSqFt", "medianPricePerSqFt", "averageSqFt", "modeSqFt", "medianSqFt", "averageLotSize", "modeLotSize", "medianLotSize", "averageBeds", "medianBeds", "modeBeds", "averageBaths", "medianBaths", "modeBaths", "averageHoa", "medianHoa", "modeHoa", "averageYearBuilt", "medianYearBuilt", "modeYearBuilt", "curDateUtc")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30) RETURNING *;`;
+    const res = await poolObj.query(addStatQuery, [
+      medianPrice,
+      modePrice,
+      averagePrice,
+      city,
+      state,
+      zip,
+      beds,
+      baths,
+      averagePricePerSqFt,
+      modePricePerSqFt,
+      medianPricePerSqFt,
+      averageSqFt,
+      modeSqFt,
+      medianSqFt,
+      averageLotSize,
+      modeLotSize,
+      medianLotSize,
+      averageBeds,
+      medianBeds,
+      modeBeds,
+      averageBaths,
+      medianBaths,
+      modeBaths,
+      averageHoa,
+      medianHoa,
+      modeHoa,
+      averageYearBuilt,
+      medianYearBuilt,
+      modeYearBuilt,
+      curDateUtc,
+    ]);
     return {
       code: "200",
       success: true,
-      message: "New stats added!",
-      stat: {
-        city: "arnold",
-        state: "MO",
-      },
+      message: "New stat added!",
+      stat: res.rows[0],
     };
   }
 }

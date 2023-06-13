@@ -21,7 +21,7 @@ export type Scalars = {
 export type AddListingMutationResponse = MutationResponse & {
   __typename?: 'AddListingMutationResponse';
   code: Scalars['String']['output'];
-  listing?: Maybe<Listing>;
+  listing: Listing;
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
 };
@@ -30,7 +30,7 @@ export type AddStatMutationResponse = MutationResponse & {
   __typename?: 'AddStatMutationResponse';
   code: Scalars['String']['output'];
   message: Scalars['String']['output'];
-  stat?: Maybe<Stat>;
+  stat: Stat;
   success: Scalars['Boolean']['output'];
 };
 
@@ -314,7 +314,7 @@ export type ResolversParentTypes = ResolversObject<{
 
 export type AddListingMutationResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['AddListingMutationResponse'] = ResolversParentTypes['AddListingMutationResponse']> = ResolversObject<{
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  listing?: Resolver<Maybe<ResolversTypes['Listing']>, ParentType, ContextType>;
+  listing?: Resolver<ResolversTypes['Listing'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -323,7 +323,7 @@ export type AddListingMutationResponseResolvers<ContextType = MyContext, ParentT
 export type AddStatMutationResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['AddStatMutationResponse'] = ResolversParentTypes['AddStatMutationResponse']> = ResolversObject<{
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  stat?: Resolver<Maybe<ResolversTypes['Stat']>, ParentType, ContextType>;
+  stat?: Resolver<ResolversTypes['Stat'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
