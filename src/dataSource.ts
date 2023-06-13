@@ -13,7 +13,7 @@ const { Pool } = pg;
 async function getPool() {
   const pool = new Pool({
     max: 20,
-    database: "test", //process.env.DATABASE,
+    database: process.env.DATABASE,
     host: process.env.DATABASE_HOST,
     password: process.env.DATABASE_PASSWORD,
     user: process.env.DATABASE_USER,
