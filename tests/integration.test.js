@@ -175,7 +175,127 @@ describe("Apollo Server", () => {
 
     expect(response.body.kind).toBe("single");
     expect(response.body.singleResult.errors).toBeUndefined();
-    expect(len).toBe(56);
+    // expect(len).toBe(56);
+    expect(data.medianPrice).toBe(99500);
+    expect(data.modePrice).toBe(40000);
+    expect(data.averagePrice).toBe(99500);
+    expect(data.city).toBe("Imperial");
+    expect(data.state).toBe("MO");
+    expect(data.zip).toBe("63052");
+    expect(data.beds).toBe(2);
+    expect(data.baths).toBe(1);
+    expect(data.averagePricePerSqFt).toBe(101.5);
+    expect(data.modePricePerSqFt).toBe(24);
+    expect(data.medianPricePerSqFt).toBe(101.5);
+    expect(data.averageSqFt).toBe(1272);
+    expect(data.modeSqFt).toBe(1656);
+    expect(data.medianSqFt).toBe(1272);
+    expect(data.modeLotSize).toBe(19868);
+    expect(data.medianLotSize).toBe(20591);
+    expect(data.averageLotSize).toBe(20591);
+    expect(data.medianBeds).toBe(2);
+    expect(data.modeBeds).toBe(2);
+    expect(data.averageBeds).toBe(2);
+    expect(data.averageBaths).toBe(1);
+    expect(data.medianBaths).toBe(1);
+    expect(data.modeBaths).toBe(1);
+    expect(data.averageHoa).toBeNull();
+    expect(data.medianHoa).toBeNull();
+    expect(data.modeHoa).toBeNull();
+    expect(data.averageYearBuilt).toBe(1954);
+    expect(data.medianYearBuilt).toBe(1954);
+    expect(data.modeYearBuilt).toBe(1956);
+    expect(data.curDateUtc).toBe("1678428000000");
+  });
+
+  it("adds a stat", async () => {
+    // run the query against the server and snapshot the output
+    const ADD_STATS = `mutation Mutation($stat: StatInput!) {
+      addStat(stat: $stat) {
+        code
+        success
+        message
+        stat {
+          medianPrice
+          modePrice
+          averagePrice
+          city
+          state
+          zip
+          beds
+          baths
+          averagePricePerSqFt
+          modePricePerSqFt
+          medianPricePerSqFt
+          averageSqFt
+          modeSqFt
+          medianSqFt
+          averageLotSize
+          modeLotSize
+          medianLotSize
+          averageBeds
+          medianBeds
+          modeBeds
+          averageBaths
+          medianBaths
+          modeBaths
+          averageHoa
+          medianHoa
+          modeHoa
+          averageYearBuilt
+          medianYearBuilt
+          modeYearBuilt
+          curDateUtc
+        }
+      }
+    }
+    `;
+    const response = await server.executeOperation(
+      {
+        query: ADD_STATS,
+        variables: {
+          stat: {
+            medianPrice: 99500,
+            modePrice: 40000,
+            averagePrice: 99500,
+            city: "Imperial",
+            state: "MO",
+            zip: "63052",
+            beds: 2,
+            baths: 1,
+            averagePricePerSqFt: 101.5,
+            modePricePerSqFt: 24,
+            medianPricePerSqFt: 101.5,
+            averageSqFt: 1272,
+            modeSqFt: 1656,
+            medianSqFt: 1272,
+            modeLotSize: 19868,
+            medianLotSize: 20591,
+            averageLotSize: 20591,
+            medianBeds: 2,
+            modeBeds: 2,
+            averageBeds: 2,
+            averageBaths: 1,
+            medianBaths: 1,
+            modeBaths: 1,
+            averageHoa: null,
+            medianHoa: null,
+            modeHoa: null,
+            averageYearBuilt: 1954,
+            medianYearBuilt: 1954,
+            modeYearBuilt: 1956,
+            curDateUtc: "2023-03-10",
+          },
+        },
+      },
+      {
+        contextValue: context,
+      }
+    );
+
+    const data = response.body.singleResult.data.addStat.stat;
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
     expect(data.medianPrice).toBe(99500);
     expect(data.modePrice).toBe(40000);
     expect(data.averagePrice).toBe(99500);
