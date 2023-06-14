@@ -7,7 +7,7 @@ import {
   AddStatMutationResponse,
 } from "./__generated__/resolvers-types";
 
-import pg, { PoolClient } from "pg";
+import pg from "pg";
 const { Pool } = pg;
 
 async function getPool() {
@@ -20,7 +20,7 @@ async function getPool() {
     port: 5432,
     idleTimeoutMillis: 30000,
   });
-  pool.on("error", (err: Error, client: PoolClient) => {
+  pool.on("error", (err: Error) => {
     console.error(err);
   });
   return pool;

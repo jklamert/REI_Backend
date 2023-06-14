@@ -15,8 +15,8 @@ const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 
 export interface MyContext {
   // Context typing
-  listen?: Object;
-  token?: String;
+  listen?: object;
+  token?: string;
   dataSources: {
     listingAPI: ListingDataSource;
     statAPI: StatDataSource;
@@ -26,7 +26,7 @@ export interface MyContext {
 const server = new ApolloServer<MyContext>({
   typeDefs: typeDefs,
   resolvers: resolvers,
-  formatError: (formattedError, error) => {
+  formatError: (formattedError) => {
     if (
       formattedError.extensions.code ===
       ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED
@@ -49,7 +49,7 @@ const server = new ApolloServer<MyContext>({
 const { url } = await startStandaloneServer(server, {
   context: async function ({ req }) {
     // try to retrieve a user with the token
-    const user = null; //getUser(token);
+    // const user = null; //getUser(token);
 
     // optionally block the user
     // we could also check user roles/permissions here
@@ -76,9 +76,3 @@ const { url } = await startStandaloneServer(server, {
 });
 
 console.log(`🚀  Server ready at: ${url}`);
-
-// const response = await server.executeOperation({
-//   query: "query numberSix {  }",
-//   variables: { name: "world" },
-// });
-// console.log("Response: ", response);
