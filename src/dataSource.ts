@@ -32,6 +32,7 @@ export class ListingDataSource {
     const getListingsQueryString = `SELECT * FROM Listing WHERE "listingId" = $1;`;
     const res = await poolObj.query(getListingsQueryString, [listingId]);
     const rows = res.rows;
+    await poolObj.end();
     return rows[0];
   }
 
@@ -99,7 +100,7 @@ export class ListingDataSource {
       mlsId,
       hoa,
     ]);
-
+    await poolObj.end();
     return {
       code: "200",
       success: true,
@@ -119,6 +120,7 @@ export class StatDataSource {
       curDateUtc,
     ]);
     const rows = res.rows;
+    await poolObj.end();
     return rows;
   }
 
@@ -191,6 +193,7 @@ export class StatDataSource {
       modeYearBuilt,
       curDateUtc,
     ]);
+    await poolObj.end();
     return {
       code: "200",
       success: true,
