@@ -10,23 +10,27 @@ import {
 import pg, { PoolClient } from "pg";
 const { Pool } = pg;
 
-const pool = new Pool({
-  max: 20,
-  database: process.env.DATABASE,
-  host: process.env.DATABASE_HOST,
-  password: process.env.DATABASE_PASSWORD,
-  user: process.env.DATABASE_USER,
-  port: 5432,
-  idleTimeoutMillis: 30000,
-});
-pool.on("error", (err: Error, client: PoolClient) => {
-  console.error(err);
-});
+async function getPool() {
+  const pool = new Pool({
+    max: 20,
+    database: "test", //process.env.DATABASE,
+    host: process.env.DATABASE_HOST,
+    password: process.env.DATABASE_PASSWORD,
+    user: process.env.DATABASE_USER,
+    port: 5432,
+    idleTimeoutMillis: 30000,
+  });
+  pool.on("error", (err: Error, client: PoolClient) => {
+    console.error(err);
+  });
+  return pool;
+}
 
 export class ListingDataSource {
   async getListing(listingId: number): Promise<Listing> {
+    const poolObj = await getPool();
     const getListingsQueryString = `SELECT * FROM Listing WHERE "listingId" = $1;`;
-    const res = await pool.query(getListingsQueryString, [listingId]);
+    const res = await poolObj.query(getListingsQueryString, [listingId]);
     const rows = res.rows;
     return rows[0];
   }
@@ -66,7 +70,8 @@ export class ListingDataSource {
     const insertQuery = `INSERT INTO public.listing(
       "mlsStatus", price, sqft, "pricePerSqFt", "lotSize", beds, baths, "fullBaths", "partialBaths", "streetLine", stories, city, state, zip, "soldDate", "propertyType", "yearBuilt", "timeZone", url, location, "propertyId", "listingId", latitude, longitude, "mlsId", hoa)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26) RETURNING *;`;
-    const res = await pool.query(insertQuery, [
+    const poolObj = await getPool();
+    const res = await poolObj.query(insertQuery, [
       mlsStatus,
       price,
       sqft,
@@ -106,8 +111,9 @@ export class ListingDataSource {
 
 export class StatDataSource {
   async getStats(city, state, curDateUtc): Promise<Stat[]> {
+    const poolObj = await getPool();
     const getDistinctCityQueryString = `SELECT * FROM Stats WHERE city = $1 AND state = $2 AND "curDateUtc" = $3;`;
-    const res = await pool.query(getDistinctCityQueryString, [
+    const res = await poolObj.query(getDistinctCityQueryString, [
       city,
       state,
       curDateUtc,
@@ -149,10 +155,11 @@ export class StatDataSource {
       modeYearBuilt,
       curDateUtc,
     } = stat;
+    const poolObj = await getPool();
     const addStatQuery = `INSERT INTO public.stats(
       "medianPrice", "modePrice", "averagePrice", city, state, zip, beds, baths, "averagePricePerSqFt", "modePricePerSqFt", "medianPricePerSqFt", "averageSqFt", "modeSqFt", "medianSqFt", "averageLotSize", "modeLotSize", "medianLotSize", "averageBeds", "medianBeds", "modeBeds", "averageBaths", "medianBaths", "modeBaths", "averageHoa", "medianHoa", "modeHoa", "averageYearBuilt", "medianYearBuilt", "modeYearBuilt", "curDateUtc")
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30) RETURNING *;`;
-    const res = await pool.query(addStatQuery, [
+    const res = await poolObj.query(addStatQuery, [
       medianPrice,
       modePrice,
       averagePrice,
