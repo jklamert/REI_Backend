@@ -327,4 +327,114 @@ describe("Apollo Server", () => {
     expect(data.modeYearBuilt).toBe(1956);
     expect(data.curDateUtc).toBe("1678428000000");
   });
+
+  it("adds a listing", async () => {
+    // run the query against the server and snapshot the output
+    const ADD_LISTING = `mutation Mutation($listing: ListingInput!) {
+      addListing(listing: $listing) {
+        code
+        success
+        message
+        listing {
+          mlsStatus
+          price
+          sqft
+          pricePerSqFt
+          lotSize
+          beds
+          baths
+          fullBaths
+          partialBaths
+          streetLine
+          stories
+          city
+          state
+          zip
+          soldDate
+          propertyType
+          yearBuilt
+          timeZone
+          url
+          location
+          propertyId
+          listingId
+          latitude
+          longitude
+          mlsId
+          hoa
+        }
+      }
+    }    
+    `;
+    const response = await server.executeOperation(
+      {
+        query: ADD_LISTING,
+        variables: {
+          listing: {
+            mlsStatus: "Active",
+            price: 334974,
+            sqft: 1279,
+            pricePerSqFt: 262,
+            lotSize: null,
+            beds: 3,
+            baths: 2,
+            fullBaths: 2,
+            partialBaths: null,
+            streetLine: "2816 Winding Valley Dr",
+            stories: 1,
+            city: "Fenton",
+            state: "MO",
+            zip: "63026",
+            soldDate: null,
+            propertyType: 6,
+            yearBuilt: null,
+            timeZone: "US/Central",
+            url: "/MO/Fenton/2816-Winding-Valley-Dr-63026/home/183485426",
+            location: "Valley at Winding Bluffs",
+            propertyId: 183485426,
+            listingId: 164146978,
+            latitude: 38.46928,
+            longitude: -90.46247,
+            mlsId: "22078812",
+            hoa: null,
+          },
+        },
+      },
+      {
+        contextValue: context,
+      }
+    );
+
+    const data = response.body.singleResult.data.addListing.listing;
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+    expect(data.mlsStatus).toBe("Active");
+    expect(data.price).toBe(334974);
+    expect(data.sqft).toBe(1279);
+    expect(data.pricePerSqFt).toBe(262);
+    expect(data.lotSize).toBeNull();
+    expect(data.beds).toBe(3);
+    expect(data.baths).toBe(2);
+    expect(data.fullBaths).toBe(2);
+    expect(data.partialBaths).toBeNull();
+    expect(data.streetLine).toBe("2816 Winding Valley Dr");
+    expect(data.stories).toBe(1);
+    expect(data.city).toBe("Fenton");
+    expect(data.state).toBe("MO");
+    expect(data.zip).toBe("63026");
+    expect(data.soldDate).toBeNull();
+    expect(data.propertyType).toBe(6);
+    expect(data.yearBuilt).toBeNull();
+    expect(data.timeZone).toBe("US/Central");
+    expect(data.url).toBe(
+      "/MO/Fenton/2816-Winding-Valley-Dr-63026/home/183485426"
+    );
+    expect(data.location).toBe("Valley at Winding Bluffs");
+    expect(data.propertyId).toBe(183485426);
+    expect(data.listingId).toBe(164146978);
+    expect(data.latitude).toBe(38.46928);
+    expect(data.longitude).toBe(-90.46247);
+    expect(data.mlsId).toBe("22078812");
+    expect(data.hoa).toBeNull();
+  });
 });
