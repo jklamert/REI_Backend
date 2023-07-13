@@ -7,8 +7,71 @@ interface MutationResponse {
 }
 
 type Query {
+  user(id: Int): User
+  userByName(name: String): User
+  search(id: Int): Search
+  searches(city: String!, state: String!): [Search]
+  expense(id: Int): Expense
   listing(listingId: Int!): Listing
   stats(city: String, state: String, curDateUtc: String): [Stat]
+}
+
+type Search {
+  id: Int
+  city: String
+  state: String
+  expenseFk: Expense
+  zip: String
+  user: Int
+  beds: Int
+  minBath: Float
+  maxBath: Float
+}
+
+type Expense {
+  id: Int
+  taxes: Float
+  insurance: Float
+  water: Float
+  sewer: Float
+  garbage: Float
+  electric: Float
+  gas: Float
+  hoa: Float
+  lot: Float
+  vacancy: Float
+  repairs: Float
+  capex: Float
+  management: Float
+  mortgage: Float
+}
+
+input ExpenseInput {
+  id: Int
+  taxes: Float
+  insurance: Float
+  water: Float
+  sewer: Float
+  garbage: Float
+  electric: Float
+  gas: Float
+  hoa: Float
+  lot: Float
+  vacancy: Float
+  repairs: Float
+  capex: Float
+  management: Float
+  mortgage: Float
+}
+
+type User {
+  id: Int!
+  name: String!
+}
+
+input UserInput {
+  id: Int!
+  name: String!
 }
 
 type Listing {
@@ -40,6 +103,18 @@ type Listing {
   hoa: Int
 }
 
+input SearchInput {
+  id: ID
+  city: String
+  state: String
+  expenseFk: ExpenseInput
+  zip: String
+  user: Int
+  beds: Int
+  minBath: Float
+  maxBath: Float
+}
+
 input ListingInput {
   mlsStatus: String
   price: Int
@@ -69,6 +144,20 @@ input ListingInput {
   hoa: Int
 }
 
+type AddExpenseMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  expense: Expense!
+}
+
+type AddUserMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  user: User!
+}
+
 type AddListingMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
@@ -76,9 +165,21 @@ type AddListingMutationResponse implements MutationResponse {
   listing: Listing!
 }
 
+type AddSearchMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  search: Search!
+}
+
 type Mutation {
+  updateExpense(expense: ExpenseInput!): AddExpenseMutationResponse
+  addExpense(expense: ExpenseInput!): AddExpenseMutationResponse
+  addUser(user: UserInput!): AddUserMutationResponse
   addListing(listing: ListingInput!): AddListingMutationResponse
   addStat(stat: StatInput!): AddStatMutationResponse
+  addSearch(search: SearchInput!): AddSearchMutationResponse
+  updateSearch(search: SearchInput!): AddSearchMutationResponse
 }
 
 type Stat {

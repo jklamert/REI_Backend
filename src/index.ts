@@ -3,7 +3,13 @@ dotenv.config();
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { ApolloServerErrorCode } from "@apollo/server/errors";
-import { ListingDataSource, StatDataSource } from "./dataSource.js";
+import {
+  ExpenseDataSource,
+  ListingDataSource,
+  SearchDataSource,
+  StatDataSource,
+  UserDataSource,
+} from "./dataSource.js";
 import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault,
@@ -20,6 +26,9 @@ export interface MyContext {
   dataSources: {
     listingAPI: ListingDataSource;
     statAPI: StatDataSource;
+    searchAPI: SearchDataSource;
+    expenseAPI: ExpenseDataSource;
+    userAPI: UserDataSource;
   };
 }
 
@@ -70,6 +79,9 @@ const { url } = await startStandaloneServer(server, {
       dataSources: {
         listingAPI: new ListingDataSource(),
         statAPI: new StatDataSource(),
+        searchAPI: new SearchDataSource(),
+        expenseAPI: new ExpenseDataSource(),
+        userAPI: new UserDataSource(),
       },
     };
   },

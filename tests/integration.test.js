@@ -1,4 +1,10 @@
-import { ListingDataSource, StatDataSource } from "../src/dataSource";
+import {
+  ListingDataSource,
+  StatDataSource,
+  SearchDataSource,
+  ExpenseDataSource,
+  UserDataSource,
+} from "../src/dataSource";
 // import { MyContext } from "../src/context";
 import { resolvers } from "../src/resolvers";
 import { readFileSync } from "fs";
@@ -21,6 +27,9 @@ describe("Apollo Server", () => {
     dataSources: {
       listingAPI: new ListingDataSource(),
       statAPI: new StatDataSource(),
+      searchAPI: new SearchDataSource(),
+      expenseAPI: new ExpenseDataSource(),
+      userAPI: new UserDataSource(),
     },
   };
 
@@ -329,7 +338,6 @@ describe("Apollo Server", () => {
   });
 
   it("adds a listing", async () => {
-    // run the query against the server and snapshot the output
     const ADD_LISTING = `mutation Mutation($listing: ListingInput!) {
       addListing(listing: $listing) {
         code
@@ -437,4 +445,145 @@ describe("Apollo Server", () => {
     expect(data.mlsId).toBe("22078812");
     expect(data.hoa).toBeNull();
   });
+
+  it("fetches a user by id", async () => {
+    const GET_USER = `query User($userId: Int) {
+      user(id: $userId) {
+        id
+        name
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: GET_USER,
+        variables: { userId: 1 },
+      },
+      {
+        contextValue: context,
+      }
+    );
+
+    const data = response.body.singleResult.data.user;
+
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+    expect(data.id).toBe(1);
+    expect(data.name).toBe("jklamert");
+  });
+
+  it("fetches a user by name", async () => {
+    const GET_USER_BY_NAME = `query User( $name: String ) {
+      userByName(name: $name) {
+        id
+        name
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: GET_USER_BY_NAME,
+        variables: { name: "jklamert" },
+      },
+      {
+        contextValue: context,
+      }
+    );
+    console.debug("Errors: ", response.body.singleResult.errors);
+    console.debug("Data: ", response.body.singleResult.data);
+
+    const data = response.body.singleResult.data.userByName;
+
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+    expect(data.id).toBe(1);
+    expect(data.name).toBe("jklamert");
+  });
+
+  it("fetches an expense by id", async () => {
+    const GET_EXPENSES = `query Expense($expenseId: Int) {
+      expense(id: $expenseId) {
+        id
+        taxes
+        insurance
+        water
+        sewer
+        garbage
+        electric
+        gas
+        hoa
+        lot
+        vacancy
+        repairs
+        capex
+        management
+        mortgage
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: GET_EXPENSES,
+        variables: { expenseId: 1 },
+      },
+      {
+        contextValue: context,
+      }
+    );
+
+    const data = response.body.singleResult.data.expense;
+
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+    expect(data.id).toBe(1);
+    expect(data.taxes).toBe(100);
+    expect(data.insurance).toBe(100);
+    expect(data.water).toBe(100);
+    expect(data.sewer).toBe(100);
+    expect(data.garbage).toBe(100);
+    expect(data.electric).toBe(100);
+    expect(data.gas).toBe(100);
+    expect(data.hoa).toBe(100);
+    expect(data.lot).toBe(100);
+    expect(data.vacancy).toBe(100);
+    expect(data.repairs).toBe(100);
+    expect(data.capex).toBe(100);
+    expect(data.management).toBe(100);
+    expect(data.mortgage).toBe(100);
+  });
+
+  // it("fetches searches by city and state", async () => {
+  //   const GET_SEARCHES = `query Searches($city: String!, $state: String!) {
+  //     searches(city: $city, state: $state) {
+  //       ID
+  //       city
+  //       state
+  //       expenseFk
+  //       zip
+  //       user
+  //       beds
+  //       minBath
+  //       maxBath
+  //     }
+  //   }`;
+  //   const response = await server.executeOperation(
+  //     {
+  //       query: GET_SEARCHES,
+  //       variables: { city: "Fenton", state: "MO" },
+  //     },
+  //     {
+  //       contextValue: context,
+  //     }
+  //   );
+
+  //   const data = response.body.singleResult.data.searches;
+
+  //   expect(response.body.kind).toBe("single");
+  //   expect(response.body.singleResult.errors).toBeUndefined();
+  //   expect(data.city).toBe("Fenton");
+  //   expect(data.state).toBe("MO");
+  //   expect(data.expenseFk).toBe(1);
+  //   expect(data.zip).toBe("63026");
+  //   expect(data.user).toBeNull(1);
+  //   expect(data.beds).toBe(3);
+  //   expect(data.minBath).toBe(1);
+  //   expect(data.maxBath).toBe(2);
+  // });
 });
