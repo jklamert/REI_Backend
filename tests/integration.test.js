@@ -303,6 +303,12 @@ describe("Apollo Server", () => {
     );
 
     const data = response.body.singleResult.data.addStat.stat;
+    expect(response.body.singleResult.data.addStat.code).toBe("200");
+    expect(response.body.singleResult.data.addStat.success).toBe(true);
+    expect(response.body.singleResult.data.addStat.message).toBe(
+      "New stat added!"
+    );
+
     expect(response.body.kind).toBe("single");
     expect(response.body.singleResult.errors).toBeUndefined();
     expect(data.medianPrice).toBe(99500);
@@ -414,6 +420,12 @@ describe("Apollo Server", () => {
     );
 
     const data = response.body.singleResult.data.addListing.listing;
+
+    expect(response.body.singleResult.data.addListing.code).toBe("200");
+    expect(response.body.singleResult.data.addListing.success).toBe(true);
+    expect(response.body.singleResult.data.addListing.message).toBe(
+      "New listing added!"
+    );
     expect(response.body.kind).toBe("single");
     expect(response.body.singleResult.errors).toBeUndefined();
     expect(data.mlsStatus).toBe("Active");
@@ -487,8 +499,6 @@ describe("Apollo Server", () => {
         contextValue: context,
       }
     );
-    console.debug("Errors: ", response.body.singleResult.errors);
-    console.debug("Data: ", response.body.singleResult.data);
 
     const data = response.body.singleResult.data.userByName;
 
@@ -549,41 +559,254 @@ describe("Apollo Server", () => {
     expect(data.mortgage).toBe(100);
   });
 
-  // it("fetches searches by city and state", async () => {
-  //   const GET_SEARCHES = `query Searches($city: String!, $state: String!) {
-  //     searches(city: $city, state: $state) {
-  //       ID
-  //       city
-  //       state
-  //       expenseFk
-  //       zip
-  //       user
-  //       beds
-  //       minBath
-  //       maxBath
-  //     }
-  //   }`;
-  //   const response = await server.executeOperation(
-  //     {
-  //       query: GET_SEARCHES,
-  //       variables: { city: "Fenton", state: "MO" },
-  //     },
-  //     {
-  //       contextValue: context,
-  //     }
-  //   );
+  it("fetches searches by city and state", async () => {
+    const GET_SEARCHES = `query Searches($city: String!, $state: String!) {
+      searches(city: $city, state: $state) {
+        id
+        city
+        state
+        expenseFk {
+          id
+          taxes
+          insurance
+          water
+          sewer
+          garbage
+          electric
+          gas
+          hoa
+          lot
+          vacancy
+          repairs
+          capex
+          management
+          mortgage
+        }
+        zip
+        user
+        beds
+        minBath
+        maxBath
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: GET_SEARCHES,
+        variables: { city: "Fenton", state: "MO" },
+      },
+      {
+        contextValue: context,
+      }
+    );
 
-  //   const data = response.body.singleResult.data.searches;
+    const data = response.body.singleResult.data.searches;
+    const testRecord = data[0];
+    const data2 = testRecord.expenseFk;
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+    expect(testRecord.city).toBe("Fenton");
+    expect(testRecord.state).toBe("MO");
+    expect(data2.id).toBe(1);
+    expect(data2.taxes).toBe(100);
+    expect(data2.insurance).toBe(100);
+    expect(data2.water).toBe(100);
+    expect(data2.sewer).toBe(100);
+    expect(data2.garbage).toBe(100);
+    expect(data2.electric).toBe(100);
+    expect(data2.gas).toBe(100);
+    expect(data2.hoa).toBe(100);
+    expect(data2.lot).toBe(100);
+    expect(data2.vacancy).toBe(100);
+    expect(data2.repairs).toBe(100);
+    expect(data2.capex).toBe(100);
+    expect(data2.management).toBe(100);
+    expect(data2.mortgage).toBe(100);
+    expect(testRecord.zip).toBe("63026");
+    expect(testRecord.user).toBe(1);
+    expect(testRecord.beds).toBe(3);
+    expect(testRecord.minBath).toBe(1);
+    expect(testRecord.maxBath).toBe(2);
+  });
 
-  //   expect(response.body.kind).toBe("single");
-  //   expect(response.body.singleResult.errors).toBeUndefined();
-  //   expect(data.city).toBe("Fenton");
-  //   expect(data.state).toBe("MO");
-  //   expect(data.expenseFk).toBe(1);
-  //   expect(data.zip).toBe("63026");
-  //   expect(data.user).toBeNull(1);
-  //   expect(data.beds).toBe(3);
-  //   expect(data.minBath).toBe(1);
-  //   expect(data.maxBath).toBe(2);
-  // });
+  it("fetches a search by id", async () => {
+    const GET_SEARCH = `query Search($id: Int!) {
+      search(id: $id) {
+        id
+        city
+        state
+        expenseFk {
+          id
+          taxes
+          insurance
+          water
+          sewer
+          garbage
+          electric
+          gas
+          hoa
+          lot
+          vacancy
+          repairs
+          capex
+          management
+          mortgage
+        }
+        zip
+        user
+        beds
+        minBath
+        maxBath
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: GET_SEARCH,
+        variables: { id: 1 },
+      },
+      {
+        contextValue: context,
+      }
+    );
+
+    const testRecord = response.body.singleResult.data.search;
+    const data2 = testRecord.expenseFk;
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+    expect(testRecord.city).toBe("Fenton");
+    expect(testRecord.state).toBe("MO");
+    expect(data2.id).toBe(1);
+    expect(data2.taxes).toBe(100);
+    expect(data2.insurance).toBe(100);
+    expect(data2.water).toBe(100);
+    expect(data2.sewer).toBe(100);
+    expect(data2.garbage).toBe(100);
+    expect(data2.electric).toBe(100);
+    expect(data2.gas).toBe(100);
+    expect(data2.hoa).toBe(100);
+    expect(data2.lot).toBe(100);
+    expect(data2.vacancy).toBe(100);
+    expect(data2.repairs).toBe(100);
+    expect(data2.capex).toBe(100);
+    expect(data2.management).toBe(100);
+    expect(data2.mortgage).toBe(100);
+    expect(testRecord.zip).toBe("63026");
+    expect(testRecord.user).toBe(1);
+    expect(testRecord.beds).toBe(3);
+    expect(testRecord.minBath).toBe(1);
+    expect(testRecord.maxBath).toBe(2);
+  });
+
+  it("adds an expense", async () => {
+    const ADD_EXPENSE = `mutation Mutation($addExpense: ExpenseInput!) {
+      addExpense(expense: $addExpense) {
+        code
+        success
+        message
+        expense {
+          id
+          taxes
+          insurance
+          water
+          sewer
+          garbage
+          electric
+          gas
+          hoa
+          lot
+          vacancy
+          repairs
+          capex
+          management
+          mortgage
+        }
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: ADD_EXPENSE,
+        variables: {
+          addExpense: {
+            taxes: 105,
+            insurance: 50,
+            water: 36,
+            sewer: 0,
+            garbage: 26,
+            electric: 116,
+            gas: 0,
+            hoa: 12,
+            lot: 0,
+            vacancy: 82,
+            repairs: 80,
+            capex: 80,
+            management: 100,
+            mortgage: 1200,
+          },
+        },
+      },
+      {
+        contextValue: context,
+      }
+    );
+
+    let data2 = response.body.singleResult.data.addExpense;
+    expect(data2.code).toBe("200");
+    expect(data2.success).toBe(true);
+    expect(data2.message).toBe("New expense added!");
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+
+    data2 = data2.expense;
+    expect(data2.taxes).toBe(105);
+    expect(data2.insurance).toBe(50);
+    expect(data2.water).toBe(36);
+    expect(data2.sewer).toBe(0);
+    expect(data2.garbage).toBe(26);
+    expect(data2.electric).toBe(116);
+    expect(data2.gas).toBe(0);
+    expect(data2.hoa).toBe(12);
+    expect(data2.lot).toBe(0);
+    expect(data2.vacancy).toBe(82);
+    expect(data2.repairs).toBe(80);
+    expect(data2.capex).toBe(80);
+    expect(data2.management).toBe(100);
+    expect(data2.mortgage).toBe(1200);
+  });
+
+  it("adds a user", async () => {
+    const ADD_USER = `mutation Mutation($user: UserInput!) {
+      addUser(user: $user) {
+        code
+        success
+        message
+        user {
+          id
+          name
+        }
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: ADD_USER,
+        variables: {
+          user: {
+            name: "testUser",
+          },
+        },
+      },
+      {
+        contextValue: context,
+      }
+    );
+    console.debug("Resp: ", response.body.singleResult);
+    let data2 = response.body.singleResult.data.addUser;
+
+    expect(data2.code).toBe("200");
+    expect(data2.success).toBe(true);
+    expect(data2.message).toBe("New user added!");
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+
+    data2 = data2.user;
+    expect(data2.name).toBe("testUser");
+  });
 });

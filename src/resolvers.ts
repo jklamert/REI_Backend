@@ -42,13 +42,20 @@ export const resolvers: Resolvers = {
       return await contextValue.dataSources.statAPI.addStat(args.stat);
     },
     addSearch: async (parent, args, contextValue) => {
+      const expense = args.search?.expenseFk;
+      await contextValue.dataSources.expenseAPI.addExpense(expense);
       return await contextValue.dataSources.searchAPI.addSearch(args.search);
     },
     updateSearch: async (parent, args, contextValue) => {
+      const expense = args.search?.expenseFk;
+      await contextValue.dataSources.expenseAPI.updateExpense(expense);
       return await contextValue.dataSources.searchAPI.updateSearch(args.search);
     },
     addUser: async (parent, args, contextValue) => {
       return await contextValue.dataSources.userAPI.addUser(args.user);
+    },
+    updateUser: async (parent, args, contextValue) => {
+      return await contextValue.dataSources.userAPI.updateUser(args.user);
     },
     addExpense: async (parent, args, contextValue) => {
       return await contextValue.dataSources.expenseAPI.addExpense(args.expense);
@@ -59,9 +66,21 @@ export const resolvers: Resolvers = {
       );
     },
   },
-  // Expense: async (parent, args, contextValue) => {
-  //   console.debug("Expense args: ", args);
-  //   const { id } = args;
-  //   return await contextValue.dataSources.expenseAPI.getExpense(args.id);
+  Search: {
+    async expenseFk(parent, args, contextValue) {
+      return await contextValue.dataSources.expenseAPI.getExpense(
+        parent.expenseFk
+      );
+    },
+  },
+  // SearchInput: {
+  //   async expenseFk(parent, args, contextValue) {
+  //     const id = parent.expenseFk?.id;
+  //     if (id) {
+  //       return await contextValue.dataSources.expenseAPI.updateExpense(args);
+  //     } else {
+  //       return await contextValue.dataSources.expenseAPI.addExpense(args);
+  //     }
+  //   },
   // },
 };

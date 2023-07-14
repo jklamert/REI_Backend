@@ -163,6 +163,7 @@ export type Mutation = {
   addUser?: Maybe<AddUserMutationResponse>;
   updateExpense?: Maybe<AddExpenseMutationResponse>;
   updateSearch?: Maybe<AddSearchMutationResponse>;
+  updateUser?: Maybe<AddUserMutationResponse>;
 };
 
 
@@ -198,6 +199,11 @@ export type MutationUpdateExpenseArgs = {
 
 export type MutationUpdateSearchArgs = {
   search: SearchInput;
+};
+
+
+export type MutationUpdateUserArgs = {
+  user: UserInput;
 };
 
 export type MutationResponse = {
@@ -351,12 +357,12 @@ export type StatInput = {
 
 export type User = {
   __typename?: 'User';
-  id: Scalars['Int']['output'];
+  id?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
 };
 
 export type UserInput = {
-  id: Scalars['Int']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
   name: Scalars['String']['input'];
 };
 
@@ -591,6 +597,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
   addUser?: Resolver<Maybe<ResolversTypes['AddUserMutationResponse']>, ParentType, ContextType, RequireFields<MutationAddUserArgs, 'user'>>;
   updateExpense?: Resolver<Maybe<ResolversTypes['AddExpenseMutationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateExpenseArgs, 'expense'>>;
   updateSearch?: Resolver<Maybe<ResolversTypes['AddSearchMutationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateSearchArgs, 'search'>>;
+  updateUser?: Resolver<Maybe<ResolversTypes['AddUserMutationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'user'>>;
 }>;
 
 export type MutationResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse']> = ResolversObject<{
@@ -658,7 +665,7 @@ export type StatResolvers<ContextType = MyContext, ParentType extends ResolversP
 }>;
 
 export type UserResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

@@ -238,6 +238,7 @@ export class SearchDataSource {
   async addSearch(search: SearchInput): Promise<AddSearchMutationResponse> {
     const { city, state, expenseFk, zip, user, beds, minBath, maxBath } =
       search;
+    const expenseId = expenseFk?.id;
     const poolObj = await getPool();
     const addSearchQuery = `INSERT INTO public.searches(
       city,
@@ -252,7 +253,7 @@ export class SearchDataSource {
     const res = await poolObj.query(addSearchQuery, [
       city,
       state,
-      expenseFk,
+      expenseId,
       zip,
       user,
       beds,
@@ -271,6 +272,7 @@ export class SearchDataSource {
   async updateSearch(search: SearchInput): Promise<AddSearchMutationResponse> {
     const { id, city, state, expenseFk, zip, user, beds, minBath, maxBath } =
       search;
+    const expenseId = expenseFk?.id;
     const poolObj = await getPool();
     const updateSearchQuery = `UPDATE public.searches SET
       city = $1,
@@ -285,7 +287,7 @@ export class SearchDataSource {
     const res = await poolObj.query(updateSearchQuery, [
       city,
       state,
-      expenseFk,
+      expenseId,
       zip,
       user,
       beds,
@@ -470,10 +472,7 @@ export class UserDataSource {
   async addUser(user: UserInput): Promise<AddUserMutationResponse> {
     const { name } = user;
     const poolObj = await getPool();
-    const addUserQuery = `INSERT INTO public.users(
-        name,
-      )
-        VALUES ($1) RETURNING *;`;
+    const addUserQuery = `INSERT INTO public.users(name) VALUES ($1) RETURNING *;`;
     const res = await poolObj.query(addUserQuery, [name]);
     await poolObj.end();
     return {
@@ -481,6 +480,21 @@ export class UserDataSource {
       success: true,
       message: "New user added!",
       user: res.rows[0],
+    };
+  }
+
+  async updateUser(user: UserInput): Promise<AddUserMutationResponse> {
+    const { name, id } = user;
+    const poolObj = await getPool();
+    const updateUserQuery = `UPDATE public.users SET name = $1 WHERE id = $2;`;
+    await poolObj.query(updateUserQuery, [name, id]);
+    const userResponse = await this.getUser(id);
+    await poolObj.end();
+    return {
+      code: "200",
+      success: true,
+      message: "User updated!",
+      user: userResponse,
     };
   }
 }

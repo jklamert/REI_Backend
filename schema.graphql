@@ -65,12 +65,12 @@ input ExpenseInput {
 }
 
 type User {
-  id: Int!
+  id: Int
   name: String!
 }
 
 input UserInput {
-  id: Int!
+  id: Int
   name: String!
 }
 
@@ -176,6 +176,7 @@ type Mutation {
   updateExpense(expense: ExpenseInput!): AddExpenseMutationResponse
   addExpense(expense: ExpenseInput!): AddExpenseMutationResponse
   addUser(user: UserInput!): AddUserMutationResponse
+  updateUser(user: UserInput!): AddUserMutationResponse
   addListing(listing: ListingInput!): AddListingMutationResponse
   addStat(stat: StatInput!): AddStatMutationResponse
   addSearch(search: SearchInput!): AddSearchMutationResponse
