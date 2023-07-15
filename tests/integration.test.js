@@ -772,6 +772,84 @@ describe("Apollo Server", () => {
     expect(data2.mortgage).toBe(1200);
   });
 
+  it("updates an expense", async () => {
+    const UPDATE_EXPENSE = `mutation UpdateExpense($expense: ExpenseInput!) {
+      updateExpense(expense: $expense) {
+        code
+        success
+        message
+        expense {
+          id
+          taxes
+          insurance
+          water
+          sewer
+          garbage
+          electric
+          gas
+          hoa
+          lot
+          vacancy
+          repairs
+          capex
+          management
+          mortgage
+        }
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: UPDATE_EXPENSE,
+        variables: {
+          expense: {
+            id: 1,
+            taxes: 110,
+            insurance: 110,
+            water: 50,
+            sewer: 10,
+            garbage: 30,
+            electric: 80,
+            gas: 10,
+            hoa: 10,
+            lot: 10,
+            vacancy: 80,
+            repairs: 70,
+            capex: 70,
+            management: 90,
+            mortgage: 1100,
+          },
+        },
+      },
+      {
+        contextValue: context,
+      }
+    );
+
+    let data2 = response.body.singleResult.data.updateExpense;
+    expect(data2.code).toBe("200");
+    expect(data2.success).toBe(true);
+    expect(data2.message).toBe("Expense Updated!");
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+
+    data2 = data2.expense;
+    expect(data2.id).toBe(1);
+    expect(data2.taxes).toBe(110);
+    expect(data2.insurance).toBe(110);
+    expect(data2.water).toBe(50);
+    expect(data2.sewer).toBe(10);
+    expect(data2.garbage).toBe(30);
+    expect(data2.electric).toBe(80);
+    expect(data2.gas).toBe(10);
+    expect(data2.hoa).toBe(10);
+    expect(data2.lot).toBe(10);
+    expect(data2.vacancy).toBe(80);
+    expect(data2.repairs).toBe(70);
+    expect(data2.capex).toBe(70);
+    expect(data2.management).toBe(90);
+    expect(data2.mortgage).toBe(1100);
+  });
+
   it("adds a user", async () => {
     const ADD_USER = `mutation Mutation($user: UserInput!) {
       addUser(user: $user) {
@@ -797,7 +875,6 @@ describe("Apollo Server", () => {
         contextValue: context,
       }
     );
-    console.debug("Resp: ", response.body.singleResult);
     let data2 = response.body.singleResult.data.addUser;
 
     expect(data2.code).toBe("200");
@@ -808,5 +885,46 @@ describe("Apollo Server", () => {
 
     data2 = data2.user;
     expect(data2.name).toBe("testUser");
+  });
+
+  it("update a user", async () => {
+    const UPDATE_USER = `  mutation UpdateUser($updateUser: UserInput!) {
+      updateUser(user: $updateUser) {
+        code
+        success
+        message
+        user {
+          id
+          name
+        }
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: UPDATE_USER,
+        variables: {
+          updateUser: {
+            id: 2,
+            name: "testUser69",
+          },
+        },
+      },
+      {
+        contextValue: context,
+      }
+    );
+    console.debug("Resp: ", response.body.singleResult);
+    let data2 = response.body.singleResult.data.updateUser;
+
+    expect(data2.code).toBe("200");
+    expect(data2.success).toBe(true);
+    expect(data2.message).toBe("User updated!");
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+
+    data2 = data2.user;
+    console.debug("User: ", data2);
+    expect(data2.id).toBe(2);
+    expect(data2.name).toBe("testUser69");
   });
 });

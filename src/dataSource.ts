@@ -436,7 +436,7 @@ export class ExpenseDataSource {
     return {
       code: "200",
       success: true,
-      message: "New expense added!",
+      message: "Expense Updated!",
       expense: res.rows[0],
     };
   }
