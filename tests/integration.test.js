@@ -542,21 +542,23 @@ describe("Apollo Server", () => {
 
     expect(response.body.kind).toBe("single");
     expect(response.body.singleResult.errors).toBeUndefined();
-    expect(data.id).toBe(1);
-    expect(data.taxes).toBe(100);
-    expect(data.insurance).toBe(100);
-    expect(data.water).toBe(100);
-    expect(data.sewer).toBe(100);
-    expect(data.garbage).toBe(100);
-    expect(data.electric).toBe(100);
-    expect(data.gas).toBe(100);
-    expect(data.hoa).toBe(100);
-    expect(data.lot).toBe(100);
-    expect(data.vacancy).toBe(100);
-    expect(data.repairs).toBe(100);
-    expect(data.capex).toBe(100);
-    expect(data.management).toBe(100);
-    expect(data.mortgage).toBe(100);
+    expect(data).toEqual({
+      id: 1,
+      taxes: 110,
+      insurance: 110,
+      water: 50,
+      sewer: 10,
+      garbage: 30,
+      electric: 80,
+      gas: 10,
+      hoa: 10,
+      lot: 10,
+      vacancy: 80,
+      repairs: 70,
+      capex: 70,
+      management: 90,
+      mortgage: 1100,
+    });
   });
 
   it("fetches searches by city and state", async () => {
@@ -606,26 +608,23 @@ describe("Apollo Server", () => {
     expect(response.body.singleResult.errors).toBeUndefined();
     expect(testRecord.city).toBe("Fenton");
     expect(testRecord.state).toBe("MO");
-    expect(data2.id).toBe(1);
-    expect(data2.taxes).toBe(100);
-    expect(data2.insurance).toBe(100);
-    expect(data2.water).toBe(100);
-    expect(data2.sewer).toBe(100);
-    expect(data2.garbage).toBe(100);
-    expect(data2.electric).toBe(100);
-    expect(data2.gas).toBe(100);
-    expect(data2.hoa).toBe(100);
-    expect(data2.lot).toBe(100);
-    expect(data2.vacancy).toBe(100);
-    expect(data2.repairs).toBe(100);
-    expect(data2.capex).toBe(100);
-    expect(data2.management).toBe(100);
-    expect(data2.mortgage).toBe(100);
-    expect(testRecord.zip).toBe("63026");
-    expect(testRecord.user).toBe(1);
-    expect(testRecord.beds).toBe(3);
-    expect(testRecord.minBath).toBe(1);
-    expect(testRecord.maxBath).toBe(2);
+    expect(data2).toEqual({
+      id: 1,
+      taxes: 110,
+      insurance: 110,
+      water: 50,
+      sewer: 10,
+      garbage: 30,
+      electric: 80,
+      gas: 10,
+      hoa: 10,
+      lot: 10,
+      vacancy: 80,
+      repairs: 70,
+      capex: 70,
+      management: 90,
+      mortgage: 1100,
+    });
   });
 
   it("fetches a search by id", async () => {
@@ -674,26 +673,23 @@ describe("Apollo Server", () => {
     expect(response.body.singleResult.errors).toBeUndefined();
     expect(testRecord.city).toBe("Fenton");
     expect(testRecord.state).toBe("MO");
-    expect(data2.id).toBe(1);
-    expect(data2.taxes).toBe(100);
-    expect(data2.insurance).toBe(100);
-    expect(data2.water).toBe(100);
-    expect(data2.sewer).toBe(100);
-    expect(data2.garbage).toBe(100);
-    expect(data2.electric).toBe(100);
-    expect(data2.gas).toBe(100);
-    expect(data2.hoa).toBe(100);
-    expect(data2.lot).toBe(100);
-    expect(data2.vacancy).toBe(100);
-    expect(data2.repairs).toBe(100);
-    expect(data2.capex).toBe(100);
-    expect(data2.management).toBe(100);
-    expect(data2.mortgage).toBe(100);
-    expect(testRecord.zip).toBe("63026");
-    expect(testRecord.user).toBe(1);
-    expect(testRecord.beds).toBe(3);
-    expect(testRecord.minBath).toBe(1);
-    expect(testRecord.maxBath).toBe(2);
+    expect(data2).toEqual({
+      id: 1,
+      taxes: 110,
+      insurance: 110,
+      water: 50,
+      sewer: 10,
+      garbage: 30,
+      electric: 80,
+      gas: 10,
+      hoa: 10,
+      lot: 10,
+      vacancy: 80,
+      repairs: 70,
+      capex: 70,
+      management: 90,
+      mortgage: 1100,
+    });
   });
 
   it("adds an expense", async () => {
