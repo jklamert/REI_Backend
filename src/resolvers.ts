@@ -1,6 +1,6 @@
 // This is the file where our generated types live
 // (specified in our `codegen.yml` file)
-import { Resolvers } from "./__generated__/resolvers-types";
+import { Resolvers, SearchInput } from "./__generated__/resolvers-types";
 export const resolvers: Resolvers = {
   Query: {
     listing: async (_, args, contextValue) => {
@@ -43,13 +43,24 @@ export const resolvers: Resolvers = {
     },
     addSearch: async (parent, args, contextValue) => {
       const expense = args.search?.expenseFk;
-      await contextValue.dataSources.expenseAPI.addExpense(expense);
-      return await contextValue.dataSources.searchAPI.addSearch(args.search);
+      const expenseData = await contextValue.dataSources.expenseAPI.addExpense(
+        expense
+      );
+      const searchToSave: SearchInput = JSON.parse(
+        JSON.stringify({ ...args.search })
+      );
+      searchToSave.expenseFk.id = expenseData.expense?.id;
+      const searchResult = await contextValue.dataSources.searchAPI.addSearch(
+        searchToSave
+      );
+      return searchResult;
     },
     updateSearch: async (parent, args, contextValue) => {
       const expense = args.search?.expenseFk;
       await contextValue.dataSources.expenseAPI.updateExpense(expense);
-      return await contextValue.dataSources.searchAPI.updateSearch(args.search);
+      const searchResult =
+        await contextValue.dataSources.searchAPI.updateSearch(args.search);
+      return searchResult;
     },
     addUser: async (parent, args, contextValue) => {
       return await contextValue.dataSources.userAPI.addUser(args.user);

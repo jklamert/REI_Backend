@@ -245,7 +245,7 @@ export class SearchDataSource {
       state,
       "expenseFk",
       zip,
-      user,
+      "user",
       beds,
       "minBath",
       "maxBath")
@@ -279,7 +279,7 @@ export class SearchDataSource {
       state = $2,
       "expenseFk" = $3,
       zip = $4,
-      user = $5,
+      "user" = $5,
       beds = $6,
       "minBath" = $7,
       "maxBath" = $8

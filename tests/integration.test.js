@@ -909,7 +909,6 @@ describe("Apollo Server", () => {
         contextValue: context,
       }
     );
-    console.debug("Resp: ", response.body.singleResult);
     let data2 = response.body.singleResult.data.updateUser;
 
     expect(data2.code).toBe("200");
@@ -919,8 +918,225 @@ describe("Apollo Server", () => {
     expect(response.body.singleResult.errors).toBeUndefined();
 
     data2 = data2.user;
-    console.debug("User: ", data2);
     expect(data2.id).toBe(2);
     expect(data2.name).toBe("testUser69");
+  });
+
+  it("adds a search", async () => {
+    const ADD_SEARCH = `mutation AddSearch($search: SearchInput!) {
+      addSearch(search: $search) {
+        code
+        success
+        message
+        search {
+          id
+          city
+          state
+          expenseFk {
+            id
+            taxes
+            insurance
+            water
+            sewer
+            garbage
+            electric
+            gas
+            hoa
+            lot
+            vacancy
+            repairs
+            capex
+            management
+            mortgage
+          }
+          zip
+          user
+          beds
+          minBath
+          maxBath
+        }
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: ADD_SEARCH,
+        variables: {
+          search: {
+            city: "Fenton",
+            state: "MO",
+            expenseFk: {
+              taxes: 100,
+              insurance: 100,
+              water: 100,
+              sewer: 100,
+              garbage: 100,
+              electric: 100,
+              gas: 100,
+              hoa: 100,
+              lot: 100,
+              vacancy: 100,
+              repairs: 100,
+              capex: 100,
+              management: 100,
+              mortgage: 100,
+            },
+            zip: "63026",
+            user: 1,
+            beds: 3,
+            minBath: 1,
+            maxBath: 2,
+          },
+        },
+      },
+      {
+        contextValue: context,
+      }
+    );
+
+    let data2 = response.body.singleResult.data.addSearch;
+
+    expect(data2.code).toBe("200");
+    expect(data2.success).toBe(true);
+    expect(data2.message).toBe("New search added!");
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+    data2 = data2.search;
+    delete data2.id;
+    delete data2.expenseFk.id;
+    expect(data2).toEqual({
+      city: "Fenton",
+      state: "MO",
+      zip: "63026",
+      user: 1,
+      beds: 3,
+      minBath: 1,
+      maxBath: 2,
+      expenseFk: {
+        taxes: 100,
+        insurance: 100,
+        water: 100,
+        sewer: 100,
+        garbage: 100,
+        electric: 100,
+        gas: 100,
+        hoa: 100,
+        lot: 100,
+        vacancy: 100,
+        repairs: 100,
+        capex: 100,
+        management: 100,
+        mortgage: 100,
+      },
+    });
+  });
+
+  it("updates a search", async () => {
+    const UPDATE_SEARCH = `mutation UpdateSearch($search: SearchInput!) {
+      updateSearch(search: $search) {
+        code
+        success
+        message
+        search {
+          id
+          city
+          state
+          expenseFk {
+            id
+            taxes
+            insurance
+            water
+            sewer
+            garbage
+            electric
+            gas
+            hoa
+            lot
+            vacancy
+            repairs
+            capex
+            management
+            mortgage
+          }
+          zip
+          user
+          beds
+          minBath
+          maxBath
+        }
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: UPDATE_SEARCH,
+        variables: {
+          search: {
+            id: 10,
+            city: "Fenton",
+            state: "MO",
+            zip: "63026",
+            user: 1,
+            beds: 3,
+            minBath: 1,
+            maxBath: 2,
+            expenseFk: {
+              id: 5,
+              taxes: 100,
+              insurance: 100,
+              water: 100,
+              sewer: 100,
+              garbage: 100,
+              electric: 100,
+              gas: 100,
+              hoa: 100,
+              lot: 100,
+              vacancy: 100,
+              repairs: 100,
+              capex: 100,
+              management: 100,
+              mortgage: 100,
+            },
+          },
+        },
+      },
+      {
+        contextValue: context,
+      }
+    );
+
+    let data2 = response.body.singleResult.data.updateSearch;
+
+    expect(data2.code).toBe("200");
+    expect(data2.success).toBe(true);
+    expect(data2.message).toBe("Search has been updated!");
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+    data2 = data2.search;
+    expect(data2).toEqual({
+      id: 10,
+      city: "Fenton",
+      state: "MO",
+      zip: "63026",
+      user: 1,
+      beds: 3,
+      minBath: 1,
+      maxBath: 2,
+      expenseFk: {
+        id: 5,
+        taxes: 100,
+        insurance: 100,
+        water: 100,
+        sewer: 100,
+        garbage: 100,
+        electric: 100,
+        gas: 100,
+        hoa: 100,
+        lot: 100,
+        vacancy: 100,
+        repairs: 100,
+        capex: 100,
+        management: 100,
+        mortgage: 100,
+      },
+    });
   });
 });

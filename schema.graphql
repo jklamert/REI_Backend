@@ -104,7 +104,7 @@ type Listing {
 }
 
 input SearchInput {
-  id: ID
+  id: Int
   city: String
   state: String
   expenseFk: ExpenseInput

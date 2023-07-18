@@ -278,7 +278,7 @@ export type SearchInput = {
   beds?: InputMaybe<Scalars['Int']['input']>;
   city?: InputMaybe<Scalars['String']['input']>;
   expenseFk?: InputMaybe<ExpenseInput>;
-  id?: InputMaybe<Scalars['ID']['input']>;
+  id?: InputMaybe<Scalars['Int']['input']>;
   maxBath?: InputMaybe<Scalars['Float']['input']>;
   minBath?: InputMaybe<Scalars['Float']['input']>;
   state?: InputMaybe<Scalars['String']['input']>;
@@ -452,7 +452,6 @@ export type ResolversTypes = ResolversObject<{
   Expense: ResolverTypeWrapper<Expense>;
   ExpenseInput: ExpenseInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
-  ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Listing: ResolverTypeWrapper<Listing>;
   ListingInput: ListingInput;
@@ -480,7 +479,6 @@ export type ResolversParentTypes = ResolversObject<{
   Expense: Expense;
   ExpenseInput: ExpenseInput;
   Float: Scalars['Float']['output'];
-  ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Listing: Listing;
   ListingInput: ListingInput;
