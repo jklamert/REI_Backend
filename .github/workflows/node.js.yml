@@ -13,39 +13,48 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
-      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      
-    # services:
-    #   postgres:
-    #     image: postgres:15
-    #     env:
-    #       POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
-    #       POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-    #       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-    #       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-    #     options: >-
-    #       --health-cmd pg_isready
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
-    #     ports:
-    #       - 5432:5432
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     strategy:
       matrix:
         node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
+
+
     steps:
-      - name: Login via Az module
-        uses: azure/login@v1
-        with:
-          creds: ${{secrets.AZURE_CREDS}}
-          enable-AzPSSession: true 
+      # - name: Login via Az module
+      #   uses: azure/login@v1
+      #   with:
+      #     creds: ${{secrets.AZURE_CREDS}}
+      #     enable-AzPSSession: true 
+
+      - name: Install PostgreSQL client
+        run: |
+          apt-get update
+          apt-get install --yes postgresql-client
+
+      # queries database with postgres client
+      - name: Query database
+        run: psql -h ${{ secrets.POSTGRES_HOST }} -d ${{ secrets.POSTGRES_DATABASE }} -U ${{ secrets.POSTGRES_USER }} -c 'SELECT 1;'
+        env:
+          # postgress password is required; alternatively, you can run:
+          # `PGPASSWORD=postgres_password psql ...`
+          PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
