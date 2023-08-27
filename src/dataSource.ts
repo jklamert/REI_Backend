@@ -22,12 +22,13 @@ const { Pool } = pg;
 async function getPool() {
   const pool = new Pool({
     max: 20,
-    database: "test", //process.env.DATABASE,
-    host: process.env.DATABASE_HOST,
-    password: process.env.DATABASE_PASSWORD,
-    user: process.env.DATABASE_USER,
+    database: process.env.POSTGRES_DATABASE, //process.env.DATABASE,
+    host: process.env.POSTGRES_HOST,
+    password: process.env.POSTGRES_PASSWORD,
+    user: process.env.POSTGRES_USER,
     port: 5432,
     idleTimeoutMillis: 30000,
+    ssl: true,
   });
   pool.on("error", (err: Error) => {
     console.error(err);
