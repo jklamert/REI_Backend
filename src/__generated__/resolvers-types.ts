@@ -218,6 +218,7 @@ export type Query = {
   listing?: Maybe<Listing>;
   search?: Maybe<Search>;
   searches?: Maybe<Array<Maybe<Search>>>;
+  searchesByUserId?: Maybe<Array<Maybe<Search>>>;
   stats?: Maybe<Array<Maybe<Stat>>>;
   user?: Maybe<User>;
   userByName?: Maybe<User>;
@@ -242,6 +243,11 @@ export type QuerySearchArgs = {
 export type QuerySearchesArgs = {
   city: Scalars['String']['input'];
   state: Scalars['String']['input'];
+};
+
+
+export type QuerySearchesByUserIdArgs = {
+  userId: Scalars['Int']['input'];
 };
 
 
@@ -610,6 +616,7 @@ export type QueryResolvers<ContextType = MyContext, ParentType extends Resolvers
   listing?: Resolver<Maybe<ResolversTypes['Listing']>, ParentType, ContextType, RequireFields<QueryListingArgs, 'listingId'>>;
   search?: Resolver<Maybe<ResolversTypes['Search']>, ParentType, ContextType, Partial<QuerySearchArgs>>;
   searches?: Resolver<Maybe<Array<Maybe<ResolversTypes['Search']>>>, ParentType, ContextType, RequireFields<QuerySearchesArgs, 'city' | 'state'>>;
+  searchesByUserId?: Resolver<Maybe<Array<Maybe<ResolversTypes['Search']>>>, ParentType, ContextType, RequireFields<QuerySearchesByUserIdArgs, 'userId'>>;
   stats?: Resolver<Maybe<Array<Maybe<ResolversTypes['Stat']>>>, ParentType, ContextType, Partial<QueryStatsArgs>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryUserArgs>>;
   userByName?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryUserByNameArgs>>;

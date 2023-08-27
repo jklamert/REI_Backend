@@ -690,6 +690,88 @@ describe("Apollo Server", () => {
       management: 90,
       mortgage: 1100,
     });
+    expect(testRecord.zip).toBe("63026");
+    expect(testRecord.user).toBe(1);
+    expect(testRecord.beds).toBe(3);
+    expect(testRecord.minBath).toBe(1);
+    expect(testRecord.maxBath).toBe(2);
+  });
+
+  it("fetches searches by user id", async () => {
+    const GET_SEARCH = `query Query($userId: Int!) {
+      searchesByUserId(userId: $userId) {
+        id
+        city
+        state
+        expenseFk {
+          id
+          taxes
+          insurance
+          water
+          sewer
+          garbage
+          electric
+          gas
+          hoa
+          lot
+          vacancy
+          repairs
+          capex
+          management
+          mortgage
+        }
+        zip
+        user
+        beds
+        minBath
+        maxBath
+      }
+    }`;
+    const response = await server.executeOperation(
+      {
+        query: GET_SEARCH,
+        variables: { userId: 1 },
+      },
+      {
+        contextValue: context,
+      }
+    );
+
+    console.debug("response.body: ", response.body.singleResult);
+
+    expect(response.body.kind).toBe("single");
+    expect(response.body.singleResult.errors).toBeUndefined();
+    expect(response.body.kind).toBe("single");
+
+    const testRecords = response.body.singleResult.data.searchesByUserId;
+    expect(testRecords.length).toBeGreaterThan(0);
+
+    const testRecord = testRecords[0];
+    const data2 = testRecord.expenseFk;
+    expect(testRecord.city).toBe("Fenton");
+    expect(testRecord.state).toBe("MO");
+    expect(data2).toEqual({
+      id: 1,
+      taxes: 110,
+      insurance: 110,
+      water: 50,
+      sewer: 10,
+      garbage: 30,
+      electric: 80,
+      gas: 10,
+      hoa: 10,
+      lot: 10,
+      vacancy: 80,
+      repairs: 70,
+      capex: 70,
+      management: 90,
+      mortgage: 1100,
+    });
+    expect(testRecord.zip).toBe("63026");
+    expect(testRecord.user).toBe(1);
+    expect(testRecord.beds).toBe(3);
+    expect(testRecord.minBath).toBe(1);
+    expect(testRecord.maxBath).toBe(2);
   });
 
   it("adds an expense", async () => {

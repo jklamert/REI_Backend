@@ -11,6 +11,7 @@ type Query {
   userByName(name: String): User
   search(id: Int): Search
   searches(city: String!, state: String!): [Search]
+  searchesByUserId(userId: Int!): [Search]
   expense(id: Int): Expense
   listing(listingId: Int!): Listing
   stats(city: String, state: String, curDateUtc: String): [Stat]

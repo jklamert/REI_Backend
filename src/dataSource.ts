@@ -222,6 +222,15 @@ export class SearchDataSource {
     return rows;
   }
 
+  async getSearchesByUserId(userId): Promise<Search[]> {
+    const poolObj = await getPool();
+    const getSearchesQueryString = `SELECT * FROM Searches WHERE Searches.user = $1;`;
+    const res = await poolObj.query(getSearchesQueryString, [userId]);
+    const rows = res.rows;
+    await poolObj.end();
+    return rows;
+  }
+
   async getSearch(id): Promise<Search> {
     const poolObj = await getPool();
     const getSearchesQueryString = `SELECT * FROM Searches WHERE id = $1;`;

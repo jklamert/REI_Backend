@@ -20,6 +20,12 @@ export const resolvers: Resolvers = {
       const { city, state } = args;
       return await contextValue.dataSources.searchAPI.getSearches(city, state);
     },
+    searchesByUserId: async (_, args, contextValue) => {
+      const { userId } = args;
+      return await contextValue.dataSources.searchAPI.getSearchesByUserId(
+        userId
+      );
+    },
     search: async (_, args, contextValue) => {
       return await contextValue.dataSources.searchAPI.getSearch(args.id);
     },
