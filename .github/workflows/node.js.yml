@@ -13,21 +13,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
-          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
+    # services:
+    #   postgres:
+    #     image: postgres:15
+    #     env:
+    #       POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+    #       POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+    #       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+    #       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+    #     options: >-
+    #       --health-cmd pg_isready
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       - 5432:5432
 
     strategy:
       matrix:
@@ -37,26 +37,44 @@ jobs:
 
 
     steps:
+      - uses: actions/checkout@v3
+
       # - name: Login via Az module
       #   uses: azure/login@v1
       #   with:
       #     creds: ${{secrets.AZURE_CREDS}}
       #     enable-AzPSSession: true 
 
-      - name: Install PostgreSQL client
-        run: |
-          apt-get update
-          apt-get install --yes postgresql-client
+      # - name: Run Azure PowerShell script
+      #   uses: azure/powershell@v1
+      #   with:
+      #     inlineScript: |
+      #       $priority = 200;
+      #       $json = Invoke-RestMethod -Uri "https://api.github.com/meta"
+      #       foreach($ip in $json.actions){
+      #           if($ip -like "*.*"){
+      #               az postgres server firewall-rule create --resource-group ${{ secrets.RESOURCE_GROUP }} --server ${{ secrets.DB_SERVER }} --name AllowIps --start-ip-address $startIp --end-ip-address $endIp
+      #               Write-Output "$($ip) added to rules."
+      #               $priority++
+      #           }
+      #       }
+      #     azPSVersion: "latest"
 
-      # queries database with postgres client
-      - name: Query database
-        run: psql -h ${{ secrets.POSTGRES_HOST }} -d ${{ secrets.POSTGRES_DATABASE }} -U ${{ secrets.POSTGRES_USER }} -c 'SELECT 1;'
-        env:
-          # postgress password is required; alternatively, you can run:
-          # `PGPASSWORD=postgres_password psql ...`
-          PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
-      - uses: actions/checkout@v3
+      # - name: Install PostgreSQL client
+      #   run: |
+      #     apt-get update
+      #     apt-get install --yes postgresql-client
+
+      # # queries database with postgres client
+      # - name: Query database
+      #   run: psql -h ${{ secrets.POSTGRES_HOST }} -d ${{ secrets.POSTGRES_DATABASE }} -U ${{ secrets.POSTGRES_USER }} -c 'SELECT 1;'
+      #   env:
+      #     # postgress password is required; alternatively, you can run:
+      #     # `PGPASSWORD=postgres_password psql ...`
+      #     PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
