@@ -16,11 +16,11 @@ jobs:
     # services:
     #   postgres:
     #     image: postgres:15
-    #     env:
-    #       POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
-    #       POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-    #       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-    #       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+    env:
+      POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
     #     options: >-
     #       --health-cmd pg_isready
     #       --health-interval 10s
