@@ -330,6 +330,15 @@ export class ExpenseDataSource {
   }
 
   async addExpense(expense: ExpenseInput): Promise<AddExpenseMutationResponse> {
+    if (!expense) {
+      return {
+        code: "400",
+        success: false,
+        message: "Bad Request. Expense data is empty!",
+        expense: null,
+      };
+    }
+
     const {
       taxes,
       insurance,
@@ -391,6 +400,15 @@ export class ExpenseDataSource {
   async updateExpense(
     expense: ExpenseInput
   ): Promise<AddExpenseMutationResponse> {
+    if (!expense) {
+      return {
+        code: "400",
+        success: false,
+        message: "Bad Request. Expense data is empty!",
+        expense: null,
+      };
+    }
+
     const {
       id,
       taxes,

@@ -149,28 +149,28 @@ type AddExpenseMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
-  expense: Expense!
+  expense: Expense
 }
 
 type AddUserMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
-  user: User!
+  user: User
 }
 
 type AddListingMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
-  listing: Listing!
+  listing: Listing
 }
 
 type AddSearchMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
-  search: Search!
+  search: Search
 }
 
 type Mutation {

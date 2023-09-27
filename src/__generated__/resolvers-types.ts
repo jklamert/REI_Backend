@@ -21,7 +21,7 @@ export type Scalars = {
 export type AddExpenseMutationResponse = MutationResponse & {
   __typename?: 'AddExpenseMutationResponse';
   code: Scalars['String']['output'];
-  expense: Expense;
+  expense?: Maybe<Expense>;
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
 };
@@ -29,7 +29,7 @@ export type AddExpenseMutationResponse = MutationResponse & {
 export type AddListingMutationResponse = MutationResponse & {
   __typename?: 'AddListingMutationResponse';
   code: Scalars['String']['output'];
-  listing: Listing;
+  listing?: Maybe<Listing>;
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
 };
@@ -38,7 +38,7 @@ export type AddSearchMutationResponse = MutationResponse & {
   __typename?: 'AddSearchMutationResponse';
   code: Scalars['String']['output'];
   message: Scalars['String']['output'];
-  search: Search;
+  search?: Maybe<Search>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -55,7 +55,7 @@ export type AddUserMutationResponse = MutationResponse & {
   code: Scalars['String']['output'];
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
-  user: User;
+  user?: Maybe<User>;
 };
 
 export type Expense = {
@@ -502,7 +502,7 @@ export type ResolversParentTypes = ResolversObject<{
 
 export type AddExpenseMutationResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['AddExpenseMutationResponse'] = ResolversParentTypes['AddExpenseMutationResponse']> = ResolversObject<{
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  expense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType>;
+  expense?: Resolver<Maybe<ResolversTypes['Expense']>, ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -510,7 +510,7 @@ export type AddExpenseMutationResponseResolvers<ContextType = MyContext, ParentT
 
 export type AddListingMutationResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['AddListingMutationResponse'] = ResolversParentTypes['AddListingMutationResponse']> = ResolversObject<{
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  listing?: Resolver<ResolversTypes['Listing'], ParentType, ContextType>;
+  listing?: Resolver<Maybe<ResolversTypes['Listing']>, ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -519,7 +519,7 @@ export type AddListingMutationResponseResolvers<ContextType = MyContext, ParentT
 export type AddSearchMutationResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['AddSearchMutationResponse'] = ResolversParentTypes['AddSearchMutationResponse']> = ResolversObject<{
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  search?: Resolver<ResolversTypes['Search'], ParentType, ContextType>;
+  search?: Resolver<Maybe<ResolversTypes['Search']>, ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -536,7 +536,7 @@ export type AddUserMutationResponseResolvers<ContextType = MyContext, ParentType
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

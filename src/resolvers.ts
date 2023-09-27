@@ -63,9 +63,21 @@ export const resolvers: Resolvers = {
     },
     updateSearch: async (parent, args, contextValue) => {
       const expense = args.search?.expenseFk;
-      await contextValue.dataSources.expenseAPI.updateExpense(expense);
+      let expenseId = expense.id;
+      if (expenseId) {
+        await contextValue.dataSources.expenseAPI.updateExpense(expense);
+      } else {
+        let result = await contextValue.dataSources.expenseAPI.addExpense(
+          expense
+        );
+        expenseId = result?.expense?.id;
+      }
+
+      const clone = { ...args.search };
+      clone.expenseFk.id = expenseId;
+
       const searchResult =
-        await contextValue.dataSources.searchAPI.updateSearch(args.search);
+        await contextValue.dataSources.searchAPI.updateSearch(clone);
       return searchResult;
     },
     addUser: async (parent, args, contextValue) => {
