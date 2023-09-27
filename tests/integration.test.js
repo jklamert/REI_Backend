@@ -616,7 +616,11 @@ describe("Apollo Server", () => {
     );
 
     const data = response.body.singleResult.data.searches;
-    const testRecord = data[0];
+
+    const filtered = data.filter((record) => {
+      return record.id === 1;
+    });
+    const testRecord = filtered[0];
     const data2 = testRecord.expenseFk;
     expect(response.body.kind).toBe("single");
     expect(response.body.singleResult.errors).toBeUndefined();
@@ -760,7 +764,10 @@ describe("Apollo Server", () => {
     const testRecords = response.body.singleResult.data.searchesByUserId;
     expect(testRecords.length).toBeGreaterThan(0);
 
-    const testRecord = testRecords[0];
+    const filtered = testRecords.filter((record) => {
+      return record.id === 1;
+    });
+    const testRecord = filtered[0];
     const data2 = testRecord.expenseFk;
     expect(testRecord.city).toBe("Fenton");
     expect(testRecord.state).toBe("MO");
