@@ -19,21 +19,30 @@ import {
 import pg from "pg";
 const { Pool } = pg;
 
-async function getPool() {
-  const pool = new Pool({
-    max: 20,
-    database: process.env.POSTGRES_DATABASE, //process.env.DATABASE,
-    host: process.env.POSTGRES_HOST,
-    password: process.env.POSTGRES_PASSWORD,
-    user: process.env.POSTGRES_USER,
-    port: 5432,
-    idleTimeoutMillis: 30000,
-    ssl: true,
-  });
-  pool.on("error", (err: Error) => {
+let poolSingleton = null;
+export async function getPool() {
+  if (!poolSingleton) {
+    poolSingleton = new Pool({
+      max: 20,
+      database: process.env.POSTGRES_DATABASE, //process.env.DATABASE,
+      host: process.env.POSTGRES_HOST,
+      password: process.env.POSTGRES_PASSWORD,
+      user: process.env.POSTGRES_USER,
+      port: 5432,
+      idleTimeoutMillis: 30000,
+      ssl: true,
+    });
+  }
+  poolSingleton.on("error", (err: Error) => {
     console.error(err);
   });
-  return pool;
+  return poolSingleton;
+}
+
+export async function endPool() {
+  if (poolSingleton) {
+    poolSingleton.end();
+  }
 }
 
 export class ListingDataSource {
@@ -42,7 +51,7 @@ export class ListingDataSource {
     const getListingsQueryString = `SELECT * FROM Listing WHERE "listingId" = $1;`;
     const res = await poolObj.query(getListingsQueryString, [listingId]);
     const rows = res.rows;
-    await poolObj.end();
+    //await poolObj.end();
     return rows[0];
   }
 
@@ -110,7 +119,7 @@ export class ListingDataSource {
       mlsId,
       hoa,
     ]);
-    await poolObj.end();
+    //await poolObj.end();
     return {
       code: "200",
       success: true,
@@ -130,7 +139,7 @@ export class StatDataSource {
       curDateUtc,
     ]);
     const rows = res.rows;
-    await poolObj.end();
+    //await poolObj.end();
     return rows;
   }
 
@@ -203,7 +212,7 @@ export class StatDataSource {
       modeYearBuilt,
       curDateUtc,
     ]);
-    await poolObj.end();
+    //await poolObj.end();
     return {
       code: "200",
       success: true,
@@ -219,7 +228,7 @@ export class SearchDataSource {
     const getSearchesQueryString = `SELECT * FROM Searches WHERE city = $1 AND state = $2;`;
     const res = await poolObj.query(getSearchesQueryString, [city, state]);
     const rows = res.rows;
-    await poolObj.end();
+    //await poolObj.end();
     return rows;
   }
 
@@ -228,7 +237,7 @@ export class SearchDataSource {
     const getSearchesQueryString = `SELECT * FROM Searches WHERE Searches.user = $1;`;
     const res = await poolObj.query(getSearchesQueryString, [userId]);
     const rows = res.rows;
-    await poolObj.end();
+    //await poolObj.end();
     return rows;
   }
 
@@ -237,7 +246,7 @@ export class SearchDataSource {
     const getSearchesQueryString = `SELECT * FROM Searches WHERE id = $1;`;
     const res = await poolObj.query(getSearchesQueryString, [id]);
     const rows = res.rows;
-    await poolObj.end();
+    //await poolObj.end();
     if (rows && rows.length) {
       return rows[0];
     } else {
@@ -270,7 +279,7 @@ export class SearchDataSource {
       minBath,
       maxBath,
     ]);
-    await poolObj.end();
+    //await poolObj.end();
     return {
       code: "200",
       success: true,
@@ -305,7 +314,7 @@ export class SearchDataSource {
       maxBath,
       id,
     ]);
-    await poolObj.end();
+    //await poolObj.end();
     return {
       code: "200",
       success: true,
@@ -321,7 +330,8 @@ export class ExpenseDataSource {
     const getExpenseQueryString = `SELECT * FROM public.expenses WHERE id = $1;`;
     const res = await poolObj.query(getExpenseQueryString, [id]);
     const rows = res.rows;
-    await poolObj.end();
+    //await poolObj.end();
+
     if (rows && rows.length) {
       return rows[0];
     } else {
@@ -388,7 +398,7 @@ export class ExpenseDataSource {
       management,
       mortgage,
     ]);
-    await poolObj.end();
+    //await poolObj.end();
     return {
       code: "200",
       success: true,
@@ -460,7 +470,7 @@ export class ExpenseDataSource {
       mortgage,
       id,
     ]);
-    await poolObj.end();
+    //await poolObj.end();
     return {
       code: "200",
       success: true,
@@ -476,7 +486,7 @@ export class UserDataSource {
     const getUserQueryString = `SELECT * FROM public.users WHERE id = $1;`;
     const res = await poolObj.query(getUserQueryString, [id]);
     const rows = res.rows;
-    await poolObj.end();
+    //await poolObj.end();
     if (rows && rows.length) {
       return rows[0];
     } else {
@@ -489,7 +499,7 @@ export class UserDataSource {
     const getUserQueryString = `SELECT * FROM public.users WHERE name = $1;`;
     const res = await poolObj.query(getUserQueryString, [name]);
     const rows = res.rows;
-    await poolObj.end();
+    //await poolObj.end();
     if (rows && rows.length) {
       return rows[0];
     } else {
@@ -502,7 +512,7 @@ export class UserDataSource {
     const poolObj = await getPool();
     const addUserQuery = `INSERT INTO public.users(name) VALUES ($1) RETURNING *;`;
     const res = await poolObj.query(addUserQuery, [name]);
-    await poolObj.end();
+    //await poolObj.end();
     return {
       code: "200",
       success: true,
@@ -517,7 +527,7 @@ export class UserDataSource {
     const updateUserQuery = `UPDATE public.users SET name = $1 WHERE id = $2;`;
     await poolObj.query(updateUserQuery, [name, id]);
     const userResponse = await this.getUser(id);
-    await poolObj.end();
+    //await poolObj.end();
     return {
       code: "200",
       success: true,

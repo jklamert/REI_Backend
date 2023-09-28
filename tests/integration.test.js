@@ -8,7 +8,7 @@ import {
 // import { MyContext } from "../src/context";
 import { resolvers } from "../src/resolvers";
 import { readFileSync } from "fs";
-import { describe, expect, it } from "@jest/globals";
+import { afterAll, describe, expect, it } from "@jest/globals";
 import { ApolloServer } from "@apollo/server";
 
 import { ApolloServerErrorCode } from "@apollo/server/errors";
@@ -16,6 +16,7 @@ import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault,
 } from "@apollo/server/plugin/landingPage/default";
+import { endPool } from "../src/dataSource";
 
 describe("Apollo Server", () => {
   const typeDefs = readFileSync("schema.graphql", {
@@ -55,6 +56,13 @@ describe("Apollo Server", () => {
         ? ApolloServerPluginLandingPageProductionDefault()
         : ApolloServerPluginLandingPageLocalDefault({ embed: false }),
     ],
+  });
+
+  afterAll(async () => {
+    console.debug("Shutting down server...");
+    await server.stop();
+    console.debug("Shutting connection pool...");
+    await endPool();
   });
 
   it("fetches a listing", async () => {
@@ -643,7 +651,7 @@ describe("Apollo Server", () => {
       management: 90,
       mortgage: 1100,
     });
-  });
+  }, 30000);
 
   it("fetches a search by id", async () => {
     const GET_SEARCH = `query Search($id: Int!) {
