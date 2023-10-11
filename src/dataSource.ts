@@ -32,10 +32,11 @@ export async function getPool() {
       idleTimeoutMillis: 30000,
       ssl: true,
     });
+    poolSingleton.on("error", (err: Error) => {
+      console.error(err);
+    });
   }
-  poolSingleton.on("error", (err: Error) => {
-    console.error(err);
-  });
+
   return poolSingleton;
 }
 
